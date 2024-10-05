@@ -1,0 +1,22 @@
+::ng-deep .dx-form .dx-form-group-caption {
+    font-weight: bold;
+}
+
+::ng-deep .xs-ir-a-clientes {  
+    display: none;
+} 
+::ng-deep .dx-list-item.dx-state-hover {  
+    .xs-ir-a-clientes {
+        cursor: pointer;
+        display: inline;
+    }
+} 
+::ng-deep .xs-sb-clientes {  
+    display: inline;
+} 
+::ng-deep .dx-button-has-icon .dx-button-content {
+    padding: 0px;
+}
+::ng-deep .xs-ir-a-clientes > dx-button > div {
+    margin-top: -5px !important;
+}

@@ -1,0 +1,141 @@
+<dx-popup
+    #popArrenda
+    id="popArrenda"
+    width="1000"
+    height="300"
+    [showTitle]="true"
+    [title]="titAplicacion"
+    [hideOnOutsideClick]="false"
+    [showCloseButton]="true"
+    (onShown)="onShown($event)"
+    (onHidden)="onHidden($event)"
+    (onInitialized)="onInitializedPopUp($event)" 
+    (onResizeEnd)="onResizeEnd($event)"
+    [(visible)]="visiblePopup"
+    [wrapperAttr]="{class: 'dx-dropdowneditor-overlay'}"
+    >
+
+    <dxi-toolbar-item
+      widget="dxButton"
+      toolbar="bottom"
+      location="after"
+      [options]="configBotonAceptar"
+    >
+    </dxi-toolbar-item>
+    <dxi-toolbar-item
+      widget="dxButton"
+      toolbar="bottom"
+      location="after"
+      [options]="configBotonCancelar"
+    >
+    </dxi-toolbar-item>
+
+    <div *dxTemplate="let data of 'content'">
+        <dx-form
+            #formArrendatarios
+            id="formArrendatarios"
+            labelLocation="top"
+            [formData]="FArrendatarios"
+            [colCount]="2"
+            labelLocation="left"
+            >
+
+            <dxi-item dataField="ID_CLIENTE" [editorOptions]="{ readOnly }">
+                <dxo-label text="CC/Nit"></dxo-label>
+                <dxi-validation-rule
+                    type="async"
+                    message="Este propietario ya existe!"
+                    [validationCallback]="ValideExistencia"
+                >
+                </dxi-validation-rule>
+                    <dxi-validation-rule type="required" message="Un código es requerido">
+                </dxi-validation-rule>
+            </dxi-item>
+
+            <dxi-item dataField="ESTADO" [editorOptions]="{ readOnly: true }" >
+                <dxo-label text="Estado"></dxo-label>
+            </dxi-item>
+
+            <dxi-item dataField="NOMBRE" >
+            <dxo-label text="Primer Nombre"></dxo-label>
+            </dxi-item>
+
+            <dxi-item dataField="NOMBRE2" >
+                <dxo-label text="Segundo Nombre"></dxo-label>
+            </dxi-item>
+
+            <dxi-item dataField="APELLIDO" >
+            <dxo-label text="Primer Apellido"></dxo-label>
+            </dxi-item>
+
+            <dxi-item dataField="APELLIDO2" >
+                <dxo-label text="Segundo Apellido"></dxo-label>
+            </dxi-item>
+
+            <dxi-item dataField="TIPO_ID" >
+                <dxo-label text="Tipo"></dxo-label>
+                <div *dxTemplate>
+                    <dx-select-box
+                        #dxTipo
+                        id="dxTipo"
+                        [dataSource]="DTipoIdLegal"
+                        [(value)]="FArrendatarios.TIPO_ID"
+                        valueExpr="TIPO"
+                        displayExpr="TIPO"
+                        (onValueChanged)="onSeleccTipoIdLegal($event)"
+                    >
+                    </dx-select-box>
+                </div>
+            </dxi-item>
+
+            <dxi-item dataField="PERSONA" >
+                <dxo-label text="Nat/Jur"></dxo-label>
+                <div *dxTemplate>
+                    <dx-select-box
+                        #dxPersona
+                        id="dxPersona"
+                        [dataSource]="DPersona"
+                        [(value)]="FArrendatarios.PERSONA"
+                        valueExpr="PERSONA"
+                        displayExpr="PERSONA"
+                        (onValueChanged)="onSeleccPersona($event)"
+                    >
+                    </dx-select-box>
+                </div>
+            </dxi-item>
+
+            <dxi-item dataField="DIRECCION" >
+                <dxo-label text="Dirección"></dxo-label>
+            </dxi-item>
+
+            <dxi-item dataField="CIUDAD" >
+                <dxo-label text="Ciudad"></dxo-label>
+                <div *dxTemplate>
+                    <dx-select-box
+                        #dxPersona
+                        id="dxPersona"
+                        [dataSource]="DCiudades"
+                        [readOnly]="readOnly"
+                        [(value)]="FArrendatarios.CIUDAD"
+                        valueExpr="ID_UBICACION"
+                        displayExpr="ID_UBICACION"
+                        (onValueChanged)="onSeleccCiudad($event)"
+                    >
+                    </dx-select-box>
+                </div>
+            </dxi-item>
+
+            <dxi-item dataField="TELEFONO" >
+                <dxo-label text="Teléfono"></dxo-label>
+            </dxi-item>
+
+            <dxi-item dataField="EMAIL" >
+                <dxo-label text="Email"></dxo-label>
+            </dxi-item>
+
+        </dx-form>
+    </div>
+
+</dx-popup>
+    
+    

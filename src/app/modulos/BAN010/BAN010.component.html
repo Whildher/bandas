@@ -1,0 +1,434 @@
+<div class="row gx-3">
+    <div class="col-12">
+       <div class="card-content">
+
+            <dx-data-grid
+                #gridAgenda
+                id="gridAgenda"
+                [dataSource]="DAgenda"
+                [showBorders]="true"
+                [allowColumnResizing]="true"
+                columnResizingMode="widget"
+                (onInitNewRow)="initNewRow($event)"
+                (onContentReady)="onContentReady($event)"
+                (onEditingStart)="onEditingStart($event)"
+                (onRowInserting)="insertingRow($event)"
+                (onRowInserted)="insertedRow($event)"
+                (onRowUpdating)="updatingRow($event)"
+                (onRowUpdated)="updatedRow($event)"
+                (onRowClick)="startEdit($event)"
+                (onCellClick)="onCellClick($event)"
+                (onRowValidating)="onRowValidating($event)"
+                (onSelectionChanged)="onSelectionChanged($event)"
+                (onCellPrepared)="onCellPrepared($event)"
+            >
+                <dxo-paging [enabled]="false"></dxo-paging>
+                <dxo-editing
+                    [useIcons]="true"
+                    mode="popup"
+                    [allowUpdating]="false"
+                    [allowAdding]="true"
+                    [allowDeleting]="true"
+                    [confirmDelete]="false"
+                    >
+                    <dxo-popup
+                        title="Programación de cortes"
+                        [showTitle]="true"
+                        [width]="700"
+                        [height]="525"
+                    >
+                    </dxo-popup>
+                </dxo-editing>
+                <!-- <dxo-selection mode="multiple"></dxo-selection> -->
+                <dxo-search-panel [width]="250" [visible]="true"></dxo-search-panel>
+                <dxo-paging [enabled]="true" [pageSize]="50"></dxo-paging>
+                <dxo-pager 
+                    [visible]="true" 
+                    [allowedPageSizes]="allowedPageSizes" 
+                    displayMode="full"
+                    [showPageSizeSelector]="true" 
+                    [showInfo]="true" 
+                    [showNavigationButtons]="true">
+                </dxo-pager>
+                <dxo-filter-row 
+                    [visible]="true"></dxo-filter-row>
+                <dxo-header-filter 
+                    [visible]="true"></dxo-header-filter>
+                <dxo-search-panel 
+                    [visible]="true" 
+                    [width]="300" 
+                    placeholder="Buscar...">
+                </dxo-search-panel>
+                
+
+                <dxi-column type="buttons" [width]="80" >
+                    <dxi-button name="edit"></dxi-button>
+                    <dxi-button name="delete" [onClick]="eliminarUsuario"></dxi-button>
+                    <dxi-button name="custom" icon="preferences" [onClick]="menuAgenda"></dxi-button>
+                </dxi-column>
+
+                <dxi-column 
+                    dataField="ORDEN" 
+                    caption="No.Orden"
+                    [width]="80"
+                    [sortIndex]="0" 
+                    sortOrder="desc"
+                    [allowEditing]="false">
+                </dxi-column>
+
+                <dxi-column dataField="FECHA"
+                    caption="Fecha"
+                    dataType="date"
+                    calculateDisplayValue="FECHA">
+                </dxi-column>
+            
+                <dxi-column dataField="PRODUCTO"
+                    caption="Producto"
+                    calculateDisplayValue="PRODUCTO"
+                    cellTemplate="verProducto"
+                    editCellTemplate="listaProducto"
+                    [width]="280"
+                    >
+                </dxi-column>
+                <dxi-column dataField="NOMBRE_PRODUCTO"
+                    [allowEditing]="false"
+                    [visible]="false">
+                </dxi-column>
+        
+                <dxi-column 
+                    dataField="CANTIDAD" 
+                    caption="Cantidad" 
+                    alignment="right" 
+                    [setCellValue]="setCellCan" 
+                    dataType="number" 
+                    displayFormat="#,##0.00"
+                    [editorOptions]="{format: '#,##0.00'}" 
+                    cssClass="clsEncabHis">
+                    <dxo-format
+                        type="fixedPoint"
+                        [precision]="2">
+                    </dxo-format>
+                </dxi-column>
+
+                <dxi-column 
+                    dataField="LARGO" 
+                    caption="Largo" 
+                    alignment="right" 
+                    [setCellValue]="setCellLargo" 
+                    dataType="number" 
+                    displayFormat="#,##0"
+                    [editorOptions]="{format: '#,##0'}" 
+                    cssClass="clsEncabHis">
+                    <dxo-format
+                        type="fixedPoint"
+                        [precision]="0">
+                    </dxo-format>
+                </dxi-column>
+
+                <dxi-column 
+                    dataField="ANCHO" 
+                    caption="Ancho" 
+                    alignment="right" 
+                    [setCellValue]="setCellAncho" 
+                    dataType="number" 
+                    displayFormat="#,##0.00"
+                    [editorOptions]="{format: '#,##0.00'}" 
+                    cssClass="clsEncabHis">
+                    <dxo-format
+                        type="fixedPoint"
+                        [precision]="2">
+                    </dxo-format>
+                </dxi-column>
+
+                <dxi-column 
+                    dataField="LARGO_FINAL" 
+                    caption="Largo Final" 
+                    alignment="right" 
+                    [setCellValue]="setCellFinal" 
+                    dataType="number" 
+                    displayFormat="#,##0.00"
+                    [editorOptions]="{format: '#,##0.00'}" 
+                    cssClass="clsEncabHis">
+                    <dxo-format
+                        type="fixedPoint"
+                        [precision]="2">
+                    </dxo-format>
+                </dxi-column>
+
+                <dxi-column dataField="USUARIO"
+                    caption="Solicita"
+                    calculateDisplayValue="USUARIO"
+                    >
+                </dxi-column>
+
+                <dxi-column dataField="ID_CLIENTE"
+                    caption="Cliente"
+                    calculateDisplayValue="ID_CLIENTE"
+                    cellTemplate="verCliente"
+                    editCellTemplate="listaCliente"
+                    [width]="280"
+                    >
+                </dxi-column>
+                <dxi-column dataField="NOMBRE_CLIENTE"
+                    [allowEditing]="false"
+                    [visible]="false">
+                </dxi-column>
+
+                <dxi-column dataField="ID_SECCION"
+                    caption="Sección"
+                    calculateDisplayValue="ID_SECCION"
+                    cellTemplate="cambioSeccion"
+                    [allowEditing]="false"
+                    >
+                </dxi-column>
+
+                <dxi-column dataField="OBSERVACIONES"
+                    caption="Observaciones"
+                    calculateDisplayValue="OBSERVACIONES"
+                    editCellTemplate="tempObs"
+                    >
+                </dxi-column>
+
+                <dxi-column dataField="ESTADO" caption="Estado">
+                    <dxo-lookup [dataSource]="['Activo','Inactivo','Cancelado']">
+                    </dxo-lookup>
+                </dxi-column>
+
+                <dxi-column 
+                    dataField="TIPO_UNION" 
+                    caption="Union" >
+                </dxi-column>
+
+                <div *dxTemplate="let cellInfo of 'verProducto'">
+                    {{ cellInfo.data.NOMBRE_PRODUCTO }}
+                </div>
+                <div *dxTemplate="let cellInfo of 'listaProducto'">
+                    <dx-select-box 
+                        #xs_PRODUCTO
+                        id="xs_PRODUCTO"
+                        [dataSource]="DListaProductos" 
+                        [(value)]="cellInfo.data.PRODUCTO" 
+                        [searchEnabled]="true"
+                        displayExpr="PRODUCTO"
+                        valueExpr="PRODUCTO"
+                        searchMode="contains"
+                        [dropDownOptions]="{ width: 600 }"
+                        (onValueChanged)="onValueChangedProducto($event, cellInfo)"
+                        >
+                        <div *dxTemplate="let data of 'item'">
+                        <div style="width: 30%; float:left">
+                            {{ data.PRODUCTO }}
+                        </div>
+                        
+                        <div style="width: 70%; float:right;">
+                            {{ data.NOMBRE }}
+                        </div>
+                        </div>
+                
+                    </dx-select-box>
+                </div>
+                
+                <div *dxTemplate="let cellInfo of 'verCliente'">
+                    {{ cellInfo.data.NOMBRE_CLIENTE }}
+                </div>
+                <div *dxTemplate="let cellInfo of 'listaCliente'">
+                    <dx-select-box 
+                        #xs_ID_CLIENTE
+                        id="xs_ID_CLIENTE"
+                        [dataSource]="DListaClientes" 
+                        [(value)]="cellInfo.data.ID_CLIENTE" 
+                        [searchEnabled]="true"
+                        displayExpr="ID_CLIENTE"
+                        valueExpr="ID_CLIENTE"
+                        searchMode="contains"
+                        [dropDownOptions]="{ width: 600 }"
+                        (onValueChanged)="onValueChangedCliente($event, cellInfo)"
+                        >
+                        <div *dxTemplate="let data of 'item'">
+                        <div style="width: 30%; float:left">
+                            {{ data.ID_CLIENTE }}
+                        </div>
+                        
+                        <div style="width: 70%; float:right;">
+                            {{ data.NOMBRE_COMPLETO }}
+                        </div>
+                        </div>
+                
+                    </dx-select-box>
+                </div>
+                
+                <div *dxTemplate="let cellInfo of 'cambioSeccion'">
+                    <!-- <a><strong style="color: blue;">{{ cellInfo.data.ID_SECCION }}</strong></a> -->
+                     <div [ngStyle]="{ 'background-color': cellInfo.data.COLOR_SECCION }">
+                        <span>{{ cellInfo.data.ID_SECCION }}</span>
+                     </div>
+                    
+                </div>
+
+                <div *dxTemplate="let cellInfo of 'tempAutoriz'">
+                    <dx-drop-down-box
+                        #ddBox
+                        [(value)]="cellInfo.value"
+                        [inputAttr]="{ 'aria-label': 'Owner' }"
+                        valueExpr="ID_APLICACION"
+                        displayExpr="ID_APLICACION"
+                        placeholder="Aplicaciones..."
+                        [showClearButton]="true"
+                        [dataSource]="DAutorizaciones"
+                        [dropDownOptions]="{ width: 400 }"
+                    >
+                        <div *dxTemplate="let templateData of 'content'">
+                            <dx-data-grid
+                                [dataSource]="DAutorizaciones"
+                                keyExpr="ID_APLICACION"
+                                [columns]="['ID_APLICACION','NOMBRE']"
+                                [selection]="{ mode: 'multiple' }"
+                                [hoverStateEnabled]="true"
+                                [paging]="{ enabled: true, pageSize: 10 }"
+                                [filterRow]="{ visible: true }"
+                                [scrolling]="{ mode: 'virtual' }"
+                                [height]="345"
+                                [(selectedRowKeys)]="gridBoxAutoriz"
+                                (onSelectionChanged)="onSelectionAutoriz($event, cellInfo)"
+                                >
+                                <dxo-search-panel
+                                    [visible]="true"
+                                    [width]="240" 
+                                    placeholder="Buscar..." 
+                                ></dxo-search-panel>
+                            </dx-data-grid>
+                        </div>
+                  </dx-drop-down-box>
+                </div>
+                            
+                <div *dxTemplate="let cellInfo of 'tempObs'">
+                    <dx-text-area
+                        [value]="cellInfo.data.OBSERVACIONES"
+                        [maxLength]="500"
+                        (onValueChanged)="onValueChangedObs($event, cellInfo)"
+                    >
+                    </dx-text-area>
+                </div>
+
+                <dxo-toolbar>
+                    <dxi-item name="searchPanel"></dxi-item>
+                    <dxi-item name="exportButton"></dxi-item>
+                    <dxi-item location="before">
+                        <div *dxTemplate>
+                          <div><h2>Programación de cortes</h2></div>
+                        </div>
+                    </dxi-item>
+                    <dxi-item>
+                        <div *dxTemplate>
+                            <dx-button 
+                                text="Crear garantía"
+                                icon="plus"
+                                type="success"
+                                stylingMode="contained"
+                                [style]="'margin-right: 20px'"
+                                (onClick)="crearCorte($event, 'GAR')">
+                            </dx-button>
+                            <dx-button 
+                                text="Crear Corte"
+                                icon="plus"
+                                type="default"
+                                stylingMode="contained"
+                                (onClick)="crearCorte($event, 'OP')">
+                            </dx-button>
+                        </div>
+                    </dxi-item>
+
+                    <!-- <dxi-item 
+                        name="custom"
+                        showText="always"
+                        [options]="{text:'Crear Corte', icon: 'plus', type:'default', stylingMode:'contained'}"
+                        [onClick]="crearCorte"
+                    > 
+                    </dxi-item> -->
+                </dxo-toolbar>
+            </dx-data-grid>
+
+        </div>
+    </div>
+</div>
+
+<dx-popup 
+    title="Cambio de sección"
+    [hideOnOutsideClick]="true"
+    height="auto"
+    [(visible)]="popUpSeccion"
+    [width]="600" 
+>
+    <dxi-toolbar-item
+        location="after"
+        toolbar="bottom"
+        > 
+        <dx-button
+            id="btnCancelarPT"
+            stylingMode="contained"
+            text="Confirmar"
+            type="default"
+            (onClick)="confirmaCambio()"
+            >
+        </dx-button>
+    </dxi-toolbar-item>
+    <dxi-toolbar-item
+        location="after"
+        toolbar="bottom"
+        > 
+        <dx-button
+            id="btnCancelarPT"
+            stylingMode="contained"
+            text="Cancelar"
+            type="normal"
+            [style.margin-left]="'20px'"
+            (onClick)="cancelaCambio()"
+            >
+        </dx-button>
+    </dxi-toolbar-item>
+            
+    <div *dxTemplate="let data of 'content'">
+        <dx-form
+            [formData]="DFCambioSeccion"
+        >
+            <dxi-item itemType="group" [colCount]="1" >
+                <dxi-item dataField="ORDEN" [editorOptions]="{ readOnly: true }">
+                    <dxo-label template="No. orden"></dxo-label>
+                </dxi-item>
+                <dxi-item dataField="PRODUCTO" [editorOptions]="{ readOnly: true }">
+                    <dxo-label template="Producto"></dxo-label>
+                </dxi-item>
+                <dxi-item dataField="ID_SECCION_ACTUAL" [editorOptions]="{ readOnly: true }">
+                    <dxo-label template="Sección actual"></dxo-label>
+                </dxi-item>
+                <dxi-item dataField="ID_SECCION" [editorOptions]="{ readOnly: true }">
+                    <dxo-label template="Sección siguiente"></dxo-label>
+                </dxi-item>
+                <dxi-item dataField="USUARIO" [editorOptions]="{ readOnly: true }">
+                    <dxo-label template="Usuario"></dxo-label>
+                </dxi-item>
+            </dxi-item>
+        </dx-form>
+    </div>
+</dx-popup>
+
+<dx-context-menu
+    [items]="DOpcionesAgenda"
+    [target]="targetOpciones"
+    showEvent=""
+    [(visible)]="menuVisible"
+    (onItemClick)="contextMenuItemClick($event)"
+>
+</dx-context-menu>
+
+<app-geninformes
+  [events]="eventsSubjectInformes.asObservable()" 
+  >
+</app-geninformes>
+
+<app-BAN01001
+    [events]="eventsSubjectLog.asObservable()"
+    >
+</app-BAN01001>
+
+

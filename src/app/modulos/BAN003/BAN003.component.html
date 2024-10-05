@@ -1,0 +1,131 @@
+<div class="row gx-3">
+    <div class="col-12">
+       <div class="card-content">
+
+            <dx-data-grid
+                #gridClientes
+                id="gridClientes"
+                [dataSource]="DClientes"
+                [showBorders]="true"
+                (onInitNewRow)="initNewRow($event)"
+                (onContentReady)="onContentReady($event)"
+                (onEditingStart)="onEditingStart($event)"
+                (onRowInserting)="insertingRow($event)"
+                (onRowInserted)="insertedRow($event)"
+                (onRowUpdating)="updatingRow($event)"
+                (onRowUpdated)="updatedRow($event)"
+                (onRowClick)="startEdit($event)"
+                (onRowValidating)="onRowValidating($event)"
+                (onSelectionChanged)="onSelectionChanged($event)"
+            >
+            <dxo-editing
+                [useIcons]="true"
+                mode="popup"
+                [allowUpdating]="false"
+                [allowAdding]="true"
+                [allowDeleting]="true"
+                [confirmDelete]="false"
+                >
+                <dxo-form [labelLocation]="'top'" colCount="1"></dxo-form>
+                <dxo-popup
+                    title="Clientes"
+                    [showTitle]="true"
+                    [width]="700"
+                    [height]="525"
+                >
+                </dxo-popup>
+            </dxo-editing>
+            <dxo-search-panel [width]="250" [visible]="true"></dxo-search-panel>
+                <dxo-paging [enabled]="true" [pageSize]="50"></dxo-paging>
+                <dxo-pager 
+                    [visible]="true" 
+                    [allowedPageSizes]="allowedPageSizes" 
+                    displayMode="full"
+                    [showPageSizeSelector]="true" 
+                    [showInfo]="true" 
+                    [showNavigationButtons]="true">
+                </dxo-pager>
+                <dxo-filter-row 
+                    [visible]="true"></dxo-filter-row>
+                <dxo-header-filter 
+                    [visible]="true"></dxo-header-filter>
+                <dxo-search-panel 
+                    [visible]="true" 
+                    [width]="300" 
+                    placeholder="Buscar...">
+                </dxo-search-panel>
+                <dxo-export [enabled]="true" [allowExportSelectedData]="true"></dxo-export>
+                <dxo-sorting mode="multiple"></dxo-sorting>
+
+                <dxi-column type="buttons" [width]="110" >
+                    <dxi-button name="edit"></dxi-button>
+                    <dxi-button name="delete" [onClick]="eliminarCliente"></dxi-button>
+                </dxi-column>
+
+                <dxi-column 
+                    dataField="ID_CLIENTE" 
+                    caption="Id Cliente"
+                    [allowEditing]="modoEdicion=='new'">
+                </dxi-column>
+
+                <dxi-column dataField="NOMBRE_COMPLETO" caption="Nombre" width="25%"></dxi-column>
+
+                <!-- <dxi-column 
+                    dataField="ITEM" 
+                    caption="Orden" 
+                    alignment="right" 
+                    [sortIndex]="0"
+                    sortOrder="asc"
+                    [setCellValue]="setCellOrden" 
+                    dataType="number" 
+                    displayFormat="#,##0"
+                    [editorOptions]="{format: '#,##0'}" 
+                    cssClass="clsEncabHis">
+                </dxi-column> -->
+
+                <dxi-column dataField="DIRECCION" caption="Dirección"></dxi-column>
+
+                <dxi-column dataField="CIUDAD" caption="Ciudad"></dxi-column>
+
+                <dxi-column dataField="TELEFONO" caption="Teléfono"></dxi-column>
+
+                <dxi-column dataField="EMAIL" caption="Email"></dxi-column>
+                            
+                <dxo-toolbar>
+                    <dxi-item name="searchPanel"></dxi-item>
+                    <dxi-item name="exportButton"></dxi-item>
+                    <dxi-item location="before">
+                        <div *dxTemplate>
+                          <div><h2>Clientes</h2></div>
+                        </div>
+                    </dxi-item>
+                    <dxi-item>
+                        <div *dxTemplate>
+                            <dx-button 
+                                text="Crear Cliente"
+                                icon="plus"
+                                type="default"
+                                stylingMode="contained"
+                                (onClick)="crearCliente($event)">
+                            </dx-button>
+                        </div>
+                    </dxi-item>
+                </dxo-toolbar>
+
+            </dx-data-grid>
+
+        </div>
+    </div>
+</div>
+
+<dx-load-panel
+    #loaderPanel
+    shadingColor="rgba(0,0,0,0.4)"
+    [position]="{ of: '#gridClientes' }"
+    [(visible)]="loadingVisible"
+    [showIndicator]="true"
+    [showPane]="true"
+    [shading]="true"
+    message="Un momento. Cargando datos..."
+    [hideOnOutsideClick]="false"
+></dx-load-panel>

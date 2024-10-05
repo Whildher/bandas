@@ -1,0 +1,178 @@
+<dx-data-grid
+    #gridItemsTarifas
+    id="gridItemsTarifas"
+    [dataSource]="DItemsTarifas"
+    [allowColumnResizing]="true"
+    columnResizingMode="nextColumn"
+    [focusedRowEnabled]="true"
+    [rowAlternationEnabled]="true"
+    [hoverStateEnabled]="true"
+    keyExpr="ITEM"
+    noDataText=""
+    [showBorders]="true"
+    [repaintChangesOnly]="true"
+    (onInitNewRow)="initNewRow($event)"
+    (onRowInserting)="insertingRow($event)"
+    (onRowInserted)="insertedRow($event)"
+    (onRowUpdating)="updatingRow($event)"
+    (onRowUpdated)="updatedRow($event)"
+    (onRowRemoved)="removedRow($event)"
+    (onSelectionChanged)="selectionGrid($event)"
+    (onEditingStart)="onEditingStart($event)"
+    (onEditorPreparing)="onEditorPreparing($event)"
+    (onToolbarPreparing)="onToolbarPreparingGrid($event)"
+    (onRowPrepared)="onRowPrepared($event)"
+    (onRowValidating)="onRowValidating($event)"
+    (onFocusedRowChanged)="onFocusedRowChanged($event)"
+    (onEditCanceled)="onEditCanceled($event)"
+    (onCellPrepared)="onCellPrepared($event)"
+    (onCellClick)="onCellClick($event)"
+    >
+  
+    <dxo-editing
+        mode="cell"
+        [useIcons]="false" 
+        [allowUpdating]="esEdicion"
+        [allowDeleting]="false"
+        [allowAdding]="esEdicion"
+        >
+        <dxo-texts
+            confirmDeleteMessage="">
+        </dxo-texts>
+    </dxo-editing>      
+      <dxo-selection
+          selectAllMode="allPages"
+          [showCheckBoxesMode]="esVisibleSelecc"
+          mode="multiple">
+      </dxo-selection>
+  
+    <dxi-column dataField="ITEM"
+        [visible]="false">
+    </dxi-column>
+  
+    <dxi-column dataField="FECHA_INICIAL"
+        caption="Fecha Inicio"
+        dataType="date"
+        width="300"
+        format="yyyy/MM/dd">
+    </dxi-column>
+
+    <dxi-column dataField="FECHA_VENCIMIENTO"
+        caption="Fecha Final"
+        dataType="date"
+        width="300"
+        format="yyyy/MM/dd">
+    </dxi-column>
+
+    <dxi-column 
+        dataField="VALOR_BASE" 
+        caption="Valor" 
+        alignment="right" 
+        [setCellValue]="setCellValor" 
+        dataType="number" 
+        width="300"
+        displayFormat="#,##0.00"
+        [editorOptions]="{format: '#,##0.00'}" 
+        cssClass="clsEncabHis">
+        <dxo-format
+            type="fixedPoint"
+            [precision]="2">
+        </dxo-format>
+    </dxi-column>
+
+    <dxi-column 
+        dataField="PORCENTAJE" 
+        caption="Int. x Mora" 
+        alignment="right" 
+        [setCellValue]="setCellPor" 
+        dataType="number" 
+        width="300"
+        displayFormat="#,##0.00"
+        [editorOptions]="{format: '#,##0.00'}" 
+        cssClass="clsEncabHis">
+        <dxo-format
+            type="fixedPoint"
+            [precision]="2">
+        </dxo-format>
+    </dxi-column>
+
+    <dxi-column dataField="TASA_BASE"
+        caption="Iva"
+        calculateDisplayValue="TASA_BASE"
+        cellTemplate="verTasa"
+        editCellTemplate="listaTasa"
+        >
+    </dxi-column>
+
+    <dxi-column
+        caption=""
+        allowEditing="false">
+    </dxi-column>
+
+    <div *dxTemplate="let cellInfo of 'verTasa'">
+      {{ cellInfo.data.IVA }}
+    </div>
+    <div *dxTemplate="let cellInfo of 'listaTasa'">
+      <dx-select-box 
+          #xs_TASA_BASE
+          id="xs_TASA_BASE"
+          [dataSource]="DIvas" 
+          [(value)]="cellInfo.data.TASA_BASE"
+          [searchEnabled]="true"
+          displayExpr="ID_TASA"
+          valueExpr="ID_TASA"
+          searchMode="contains"
+          [dropDownOptions]="{ width: 600 }"
+          (onValueChanged)="onValueChangedIva($event, cellInfo)"
+          >
+          <div *dxTemplate="let data of 'item'">
+            <div style="width: 40%; float:left">
+              {{ data.ID_TASA }}
+            </div>
+            
+            <div style="width: 60%; float:right; ">
+              {{ data.PORCENTAJE*100 | number:'1.0-2':'en-US' }}%
+            </div>
+          </div>
+
+      </dx-select-box>
+    </div>
+
+    <dxo-toolbar>
+        <dxi-item location="before">
+          <div *dxTemplate>
+            <div style="font-size: 16px;">Items de Tarifas</div> 
+          </div>
+        </dxi-item>
+        <dxi-item *ngIf="esEdicion" location="before">
+          <div *dxTemplate>
+            <dx-button icon="plus" matTooltip="Nuevo" (onClick)="operGrid($event,'new')" *ngIf="rowNew">
+            </dx-button>
+          </div>
+        </dxi-item>
+        <dxi-item *ngIf="esEdicion" location="before">
+          <div *dxTemplate>
+            <dx-button icon="edit" matTooltip="Actualizar" (onClick)="operGrid($event,'update')" *ngIf="rowEdit">
+            </dx-button>
+          </div>
+        </dxi-item>
+        <dxi-item  *ngIf="esEdicion" location="before">
+          <div *dxTemplate>
+            <dx-button icon="trash" matTooltip="Eliminar" (onClick)="operGrid($event,'delete')" *ngIf="rowDelete">
+            </dx-button>
+          </div>
+        </dxi-item>
+        <dxi-item  *ngIf="esEdicion" location="before">
+          <div *dxTemplate>
+            <dx-button icon="todo" matTooltip="Guardar" (onClick)="operGrid($event,'save')" *ngIf="rowApplyChanges">
+            </dx-button>
+          </div>
+        </dxi-item>
+        <dxi-item  *ngIf="esEdicion" location="before">
+          <div *dxTemplate>
+            <dx-button icon="undo" matTooltip="Cancelar" (onClick)="operGrid($event,'cancel')" *ngIf="rowApplyChanges">
+          </dx-button>
+            </div>
+        </dxi-item>
+    </dxo-toolbar>
+</dx-data-grid>

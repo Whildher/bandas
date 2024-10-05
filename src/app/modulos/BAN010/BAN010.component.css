@@ -1,0 +1,7 @@
+::ng-deep div.swal2-container.swal2-center.swal2-backdrop-show {
+    z-index: 10000 !important;
+}
+
+::ng-deep body > div.dx-overlay-wrapper.dx-datagrid-edit-popup.dx-popup-wrapper.dx-overlay-shader > div > div.dx-popup-content > div > div > div > div.dx-scrollable-content > div > div > div > div > div:nth-child(7) > div > div:nth-child(1) {
+    flex: 1 100% !important;
+}

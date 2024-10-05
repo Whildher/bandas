@@ -1,0 +1,36 @@
+ng serve --port 4755 --proxy-config proxy.conf.json
+ng serve --ssl=true --host=0.0.0.0 --port 2350 --proxy-config proxy.conf.json
+
+{
+    "/api/*":{
+        "target":"http://192.168.0.30:8555",
+        "secure":false,
+        "loglevel":"debug"
+    }
+}
+
+{
+    "/api/*":{
+        "target":"http://190.85.54.78:4990",
+        "secure":false,
+        "loglevel":"debug"
+    }
+    
+}
+
+token: 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
+
+Mostrar los servicios y puertos activos linux::
+sudo netstat -tupln
+
+salida compilacion a archivo
+ng serve mfe-xtein -o > out.txt 2>&1
+
+** agregar una aplicacion al proyecto mfe
+ng generate application mfe-xtein --routing --style css --inline-style --skip-tests
+ng add @angular-architects/module-federation --project mfe-xtein
+
+** crear una app con projects
+cd frontend
+ng generate application administration --style=scss --routing=true
+ng generate application gatling --style=scss --routing=true

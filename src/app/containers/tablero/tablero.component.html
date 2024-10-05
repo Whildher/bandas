@@ -1,0 +1,138 @@
+
+<section class="tiles-container">
+  <div class="tile" *ngIf="usuApl('BAN-001')">
+      <h2>Usuarios</h2>
+      <p>
+          Administración de Usuarios
+      </p>
+
+      <div style="position: absolute; bottom: 10px">
+        <button type="button" class="btn btn--blue" (click)="abrirApl('BAN-001')">
+          <span class="btn__txt">Ir a Usuarios</span>
+          <i class="btn__bg" aria-hidden="true"></i>
+          <i class="btn__bg" aria-hidden="true"></i>
+          <i class="btn__bg" aria-hidden="true"></i>
+          <i class="btn__bg" aria-hidden="true"></i>
+        </button>
+      </div>
+  </div>
+
+  <div class="tile" *ngIf="usuApl('BAN-002')">
+      <h2>Productos</h2>
+      <p>
+          Productos a fabricar.
+          Materias Primas
+      </p>
+
+      <div style="position: absolute; bottom: 10px">
+        <button type="button" class="btn btn--blue" (click)="abrirApl('BAN-002')">
+          <span class="btn__txt">Ir a Productos</span>
+          <i class="btn__bg" aria-hidden="true"></i>
+          <i class="btn__bg" aria-hidden="true"></i>
+          <i class="btn__bg" aria-hidden="true"></i>
+          <i class="btn__bg" aria-hidden="true"></i>
+        </button>
+      </div>
+
+   </div>
+
+  <div class="tile" *ngIf="usuApl('BAN-003')">
+      <h2>Clientes</h2>
+      <p>
+          Clientes
+          Direcciones, teéfonos,
+          contactos
+      </p>
+
+      <div style="position: absolute; bottom: 10px">
+        <button type="button" class="btn btn--blue" (click)="abrirApl('BAN-003')">
+          <span class="btn__txt">Ir a Clientes</span>
+          <i class="btn__bg" aria-hidden="true"></i>
+          <i class="btn__bg" aria-hidden="true"></i>
+          <i class="btn__bg" aria-hidden="true"></i>
+          <i class="btn__bg" aria-hidden="true"></i>
+        </button>
+      </div>
+
+   </div>
+
+  <div class="tile" *ngIf="usuApl('BAN-004')">
+      <h2>Proveedores</h2>
+      <p>
+          Proveedores de Materias primas, 
+          direcciones, teléfonos, contacto
+      </p>
+
+      <div style="position: absolute; bottom: 10px">
+        <button type="button" class="btn btn--blue" (click)="abrirApl('BAN-004')">
+          <span class="btn__txt">Ir a Proveedores</span>
+          <i class="btn__bg" aria-hidden="true"></i>
+          <i class="btn__bg" aria-hidden="true"></i>
+          <i class="btn__bg" aria-hidden="true"></i>
+          <i class="btn__bg" aria-hidden="true"></i>
+        </button>
+      </div>
+
+   </div>
+
+   <div class="tile" *ngIf="usuApl('BAN-005')">
+    <h2>Secciones</h2>
+    <p>
+        Secciones. Areas de producción. 
+        Control del orden de fabricación
+    </p>
+
+    <div style="position: absolute; bottom: 10px">
+      <button type="button" class="btn btn--blue" (click)="abrirApl('BAN-005')">
+        <span class="btn__txt">Ir a Secciones</span>
+        <i class="btn__bg" aria-hidden="true"></i>
+        <i class="btn__bg" aria-hidden="true"></i>
+        <i class="btn__bg" aria-hidden="true"></i>
+        <i class="btn__bg" aria-hidden="true"></i>
+      </button>
+    </div>
+
+ </div>
+
+
+    <div class="tile" *ngIf="usuApl('BAN-010')">
+      <h2>Programación de Cortes</h2>
+      <p>
+          Programación de cortes
+          Agenda de ordenes de producción
+          Consultas, gestión de eventos
+      </p>
+
+      <div style="position: absolute; bottom: 10px">
+        <button type="button" class="btn btn--green" (click)="abrirApl('BAN-010')">
+          <span class="btn__txt">Ir a Cortes</span>
+          <i class="btn__bg" aria-hidden="true"></i>
+          <i class="btn__bg" aria-hidden="true"></i>
+          <i class="btn__bg" aria-hidden="true"></i>
+          <i class="btn__bg" aria-hidden="true"></i>
+        </button>
+      </div>
+
+    </div>
+
+
+    <div class="tile" *ngIf="usuApl('BAN-011')">
+      <h2>Cotizaciones</h2>
+      <p>
+          Cotización de productos a clientes
+          según precios y costos de proveedores
+      </p>
+
+      <div style="position: absolute; bottom: 10px">
+        <button type="button" class="btn btn--green" (click)="abrirApl('BAN-012')">
+          <span class="btn__txt">Ir a Cotizaciones</span>
+          <i class="btn__bg" aria-hidden="true"></i>
+          <i class="btn__bg" aria-hidden="true"></i>
+          <i class="btn__bg" aria-hidden="true"></i>
+          <i class="btn__bg" aria-hidden="true"></i>
+        </button>
+      </div>
+
+    </div>
+
+</section>

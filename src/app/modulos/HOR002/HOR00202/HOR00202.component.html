@@ -1,0 +1,200 @@
+<dx-data-grid
+    #gridArrendatarios
+    id="gridArrendatarios"
+    [dataSource]="DArrendatarios"
+    [allowColumnResizing]="true"
+    columnResizingMode="nextColumn"
+    [focusedRowEnabled]="true"
+    [rowAlternationEnabled]="true"
+    [hoverStateEnabled]="true"
+    keyExpr="ITEM"
+    noDataText=""
+    [showBorders]="true"
+    [repaintChangesOnly]="true"
+    (onInitNewRow)="initNewRow($event)"
+    (onRowInserting)="insertingRow($event)"
+    (onRowInserted)="insertedRow($event)"
+    (onRowUpdating)="updatingRow($event)"
+    (onRowUpdated)="updatedRow($event)"
+    (onRowRemoved)="removedRow($event)"
+    (onSelectionChanged)="selectionGrid($event)"
+    (onEditingStart)="onEditingStart($event)"
+    (onEditorPreparing)="onEditorPreparing($event)"
+    (onToolbarPreparing)="onToolbarPreparingGrid($event)"
+    (onRowPrepared)="onRowPrepared($event)"
+    (onRowValidating)="onRowValidating($event)"
+    (onFocusedRowChanged)="onFocusedRowChanged($event)"
+    (onEditCanceled)="onEditCanceled($event)"
+    (onCellPrepared)="onCellPrepared($event)"
+    (onCellClick)="onCellClick($event)"
+    >
+  
+    <dxo-editing
+        mode="cell"
+        [useIcons]="false" 
+        [allowUpdating]="esEdicion"
+        [allowDeleting]="false"
+        [allowAdding]="esEdicion"
+        >
+        <dxo-texts
+            confirmDeleteMessage="">
+        </dxo-texts>
+    </dxo-editing>      
+      <dxo-selection
+          selectAllMode="allPages"
+          [showCheckBoxesMode]="esVisibleSelecc"
+          mode="multiple">
+      </dxo-selection>
+  
+      <dxi-column dataField="ITEM"
+        [visible]="false">
+      </dxi-column>
+  
+      <dxi-column dataField="ID_ARRENDATARIO"
+        caption="Arrendatario"
+        calculateDisplayValue="ARRENDATARIO"
+        cellTemplate="verArre"
+        editCellTemplate="listaArre"
+        >
+      </dxi-column>
+  
+      <dxi-column dataField="FACTURABLE"
+        caption="Facturable"
+        calculateDisplayValue="FACTURABLE"
+        cellTemplate="checkFacturable"
+        editCellTemplate="checkFacturable">
+      </dxi-column>
+  
+      <dxi-column dataField="FECHA_INICIO"
+        caption="Fecha Inicio"
+        dataType="date"
+        calculateDisplayValue="FECHA_INICIO">
+      </dxi-column>
+  
+      <dxi-column dataField="FECHA_FINAL"
+        caption="Fecha Final"
+        dataType="date"
+        calculateDisplayValue="FECHA_FINAL">
+      </dxi-column>
+  
+      <dxi-column dataField="ESTADO"
+        caption="Estado"
+        calculateDisplayValue="ESTADO">
+      </dxi-column>
+
+      <dxi-column dataField="ID_ARRENDATARIA"
+        caption="Agencia Arr."
+        calculateDisplayValue="ARRENDATARIA"
+        cellTemplate="verArrtaria"
+        editCellTemplate="listaArrtaria"
+        >
+      </dxi-column>
+  
+      <div *dxTemplate="let cellInfo of 'verArre'">
+        {{ cellInfo.data.ARRENDATARIO }}
+      </div>
+      <div *dxTemplate="let cellInfo of 'listaArre'">
+        <dx-select-box 
+          #xs_ID_ARRE
+          id="xs_ID_ARRE"
+          [dataSource]="DListaArre" 
+          [(value)]="cellInfo.data.ID_ARRENDATARIO"
+          [searchEnabled]="true"
+          displayExpr="ID_CLIENTE"
+          valueExpr="ID_CLIENTE"
+          searchMode="contains"
+          [dropDownOptions]="{ width: 600 }"
+          (onValueChanged)="onValueChangedArre($event, cellInfo)"
+          >
+          <div *dxTemplate="let data of 'item'">
+            <div style="width: 30%; float:left">
+              {{ data.ID_CLIENTE }}
+            </div>
+            
+            <div style="width: 70%; float:right;">
+              {{ data.NOMBRE_COMPLETO }}
+            </div>
+          </div>
+
+        </dx-select-box>
+      </div>
+
+      <div *dxTemplate="let cellInfo of 'checkFacturable'">
+        <dx-check-box
+          #chFacturable
+          id="chFacturable"
+          [value]="cellInfo.data.FACTURABLE"
+          [disabled]="!rowApplyChanges"
+          (click)="clickFacturable($event, cellInfo)"
+          (onValueChanged)="onValueChangedFac($event, cellInfo)"
+        >
+        </dx-check-box>
+      </div>
+  
+      <div *dxTemplate="let cellInfo of 'verArrtaria'">
+        {{ cellInfo.data.ARRENDATARIA }}
+      </div>
+      <div *dxTemplate="let cellInfo of 'listaArrtaria'">
+        <dx-select-box 
+          #xs_ID_ARRE
+          id="xs_ID_ARRE"
+          [dataSource]="DListaArrtaria" 
+          [(value)]="cellInfo.data.ID_ARRENDATARIA"
+          [searchEnabled]="true"
+          displayExpr="ID_CLIENTE"
+          valueExpr="ID_CLIENTE"
+          searchMode="contains"
+          [dropDownOptions]="{ width: 600 }"
+          (onValueChanged)="onValueChangedArrtaria($event, cellInfo)"
+          >
+          <div *dxTemplate="let data of 'item'">
+            <div style="width: 30%; float:left">
+              {{ data.ID_CLIENTE }}
+            </div>
+            
+            <div style="width: 70%; float:right;">
+              {{ data.NOMBRE_COMPLETO }}
+            </div>
+          </div>
+
+        </dx-select-box>
+      </div>
+
+      <dxo-toolbar>
+        <dxi-item location="before">
+          <div *dxTemplate>
+            <div style="font-size: 18;">Arrendatarios</div> 
+          </div>
+        </dxi-item>
+        <dxi-item *ngIf="esEdicion" location="before">
+          <div *dxTemplate>
+            <dx-button icon="plus" matTooltip="Nuevo" (onClick)="operGrid($event,'new')" *ngIf="rowNew">
+            </dx-button>
+          </div>
+        </dxi-item>
+        <dxi-item *ngIf="esEdicion" location="before">
+          <div *dxTemplate>
+            <dx-button icon="edit" matTooltip="Actualizar" (onClick)="operGrid($event,'update')" *ngIf="rowEdit">
+            </dx-button>
+          </div>
+        </dxi-item>
+        <dxi-item  *ngIf="esEdicion" location="before">
+          <div *dxTemplate>
+            <dx-button icon="trash" matTooltip="Eliminar" (onClick)="operGrid($event,'delete')" *ngIf="rowDelete">
+            </dx-button>
+          </div>
+        </dxi-item>
+        <dxi-item  *ngIf="esEdicion" location="before">
+          <div *dxTemplate>
+            <dx-button icon="todo" matTooltip="Guardar" (onClick)="operGrid($event,'save')" *ngIf="rowApplyChanges">
+            </dx-button>
+          </div>
+        </dxi-item>
+        <dxi-item  *ngIf="esEdicion" location="before">
+          <div *dxTemplate>
+            <dx-button icon="undo" matTooltip="Cancelar" (onClick)="operGrid($event,'cancel')" *ngIf="rowApplyChanges">
+          </dx-button>
+            </div>
+        </dxi-item>
+    </dxo-toolbar>
+</dx-data-grid>

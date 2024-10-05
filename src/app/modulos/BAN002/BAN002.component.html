@@ -1,0 +1,196 @@
+
+            <dx-data-grid
+                #gridProductos
+                id="gridProductos"
+                [dataSource]="DProductos"
+                [allowColumnResizing]="true"
+                columnResizingMode="widget"
+                [showColumnLines]="false"
+                [showRowLines]="true"
+                [showBorders]="true"
+                [rowAlternationEnabled]="true"
+                (onInitNewRow)="initNewRow($event)"
+                (onContentReady)="onContentReady($event)"
+                (onEditingStart)="onEditingStart($event)"
+                (onRowInserting)="insertingRow($event)"
+                (onRowInserted)="insertedRow($event)"
+                (onRowUpdating)="updatingRow($event)"
+                (onRowUpdated)="updatedRow($event)"
+                (onRowClick)="startEdit($event)"
+                (onRowValidating)="onRowValidating($event)"
+                (onSelectionChanged)="onSelectionChanged($event)"
+            >
+                <dxo-paging [enabled]="false"></dxo-paging>
+                <dxo-editing
+                    [useIcons]="true"
+                    mode="popup"
+                    [allowUpdating]="false"
+                    [allowAdding]="true"
+                    [allowDeleting]="true"
+                    [confirmDelete]="false"
+                    >
+                    <dxo-form [labelLocation]="'top'" colCount="1"></dxo-form>
+                    <dxo-popup
+                        title="Productos y referencias"
+                        [showTitle]="true"
+                        [width]="700"
+                        [height]="525"
+                    >
+                    </dxo-popup>
+                </dxo-editing>
+                <!-- <dxo-selection mode="multiple"></dxo-selection> -->
+                <dxo-search-panel [width]="250" [visible]="true"></dxo-search-panel>
+                <dxo-paging [enabled]="true" [pageSize]="50"></dxo-paging>
+                <dxo-pager 
+                    [visible]="true" 
+                    [allowedPageSizes]="allowedPageSizes" 
+                    displayMode="full"
+                    [showPageSizeSelector]="true" 
+                    [showInfo]="true" 
+                    [showNavigationButtons]="true">
+                </dxo-pager>
+                <dxo-filter-row 
+                    [visible]="true"></dxo-filter-row>
+                <dxo-header-filter 
+                    [visible]="true"></dxo-header-filter>
+                <dxo-search-panel 
+                    [visible]="true" 
+                    [width]="300" 
+                    placeholder="Buscar...">
+                </dxo-search-panel>
+                <dxo-export [enabled]="true" [allowExportSelectedData]="true"></dxo-export>
+                <dxo-sorting mode="multiple"></dxo-sorting>
+                
+
+                <dxi-column type="buttons" [width]="80" >
+                    <dxi-button name="edit"></dxi-button>
+                    <dxi-button name="delete" [onClick]="eliminarProducto"></dxi-button>
+                    <!-- <dxi-button name="custom" icon="preferences" [onClick]="menuAgenda"></dxi-button> -->
+                </dxi-column>
+
+
+                <dxi-column 
+                    dataField="ITEM" 
+                    caption="#" 
+                    alignment="right" 
+                    [width]="40"
+                    [allowEditing]="false"
+                    >
+                </dxi-column>
+
+                <dxi-column 
+                    dataField="PRODUCTO" 
+                    caption="Producto"
+                    width="20%"
+                    [allowEditing]="modoEdicion=='new'">
+                </dxi-column>
+
+                <dxi-column 
+                    dataField="NOMBRE" 
+                    caption="Nombre" 
+                    width="40%"
+                    editCellTemplate="cellTempNombre">
+                </dxi-column>
+
+                <dxi-column dataField="ID_UDM"
+                    caption="UM"
+                    calculateDisplayValue="ID_UDM"
+                    editCellTemplate="listaUDM"
+                    [width]="120"
+                    >
+                </dxi-column>
+
+                <dxi-column 
+                    dataField="LARGO" 
+                    caption="Largo" 
+                    alignment="right" 
+                    [setCellValue]="setCellLargo" 
+                    dataType="number" 
+                    displayFormat="#,##0.0000"
+                    [editorOptions]="{format: '#,##0.0000'}" 
+                    >
+                </dxi-column>
+
+                <dxi-column 
+                    dataField="ANCHO" 
+                    caption="Ancho" 
+                    alignment="right" 
+                    [setCellValue]="setCellAncho" 
+                    dataType="number" 
+                    displayFormat="#,##0.0000"
+                    [editorOptions]="{format: '#,##0.0000'}" 
+                    >
+                </dxi-column>
+
+                <dxi-column dataField="ESTADO" caption="Estado"></dxi-column>
+                            
+                <dxo-toolbar>
+                    <dxi-item name="searchPanel"></dxi-item>
+                    <dxi-item name="exportButton"></dxi-item>
+                    <dxi-item location="before">
+                        <div *dxTemplate>
+                          <div><h2>Productos/Referencias</h2></div>
+                        </div>
+                    </dxi-item>
+                    <dxi-item>
+                        <div *dxTemplate>
+                            <dx-button 
+                                text="Crear Producto"
+                                icon="plus"
+                                type="default"
+                                stylingMode="contained"
+                                (onClick)="crearProducto($event)">
+                            </dx-button>
+                        </div>
+                    </dxi-item>
+                </dxo-toolbar>
+
+
+                <div *dxTemplate="let cellInfo of 'cellTempNombre'" >
+                    <dx-text-area
+                        [height]="90"
+                        [(value)]="cellInfo.data.NOMBRE"
+                        (onValueChanged)="onValueCambioNombre($event, cellInfo)"
+                    >
+                    </dx-text-area>
+                </div>
+
+                <div *dxTemplate="let cellInfo of 'listaUDM'">
+                    <dx-select-box 
+                        #xs_ID__UDM
+                        id="xs_ID_UDM"
+                        [dataSource]="DListaUDM" 
+                        [(value)]="cellInfo.data.ID_UDM" 
+                        [searchEnabled]="true"
+                        displayExpr="ID_UDM"
+                        valueExpr="ID_UDM"
+                        searchMode="contains"
+                        [dropDownOptions]="{ width: 600 }"
+                        (onValueChanged)="onValueChangedUDM($event, cellInfo)"
+                        >
+                        <div *dxTemplate="let data of 'item'">
+                        <div style="width: 30%; float:left">
+                            {{ data.ID_UDM }}
+                        </div>
+                        
+                        <div style="width: 70%; float:right;">
+                            {{ data.NOMBRE }}
+                        </div>
+                        </div>
+                
+                    </dx-select-box>
+                </div>
+
+        </dx-data-grid>
+
+<dx-load-panel
+    #loaderPanel
+    shadingColor="rgba(0,0,0,0.4)"
+    [position]="{ of: '#gridProductos' }"
+    [(visible)]="loadingVisible"
+    [showIndicator]="true"
+    [showPane]="true"
+    [shading]="true"
+    message="Un momento. Cargando datos..."
+    [hideOnOutsideClick]="false"
+></dx-load-panel>

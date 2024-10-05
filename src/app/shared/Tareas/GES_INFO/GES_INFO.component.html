@@ -1,0 +1,367 @@
+<dx-popup
+  #popupGesproInfo
+  id="popupGesproInfo"
+  [title]="tituloGesproInfo"
+  width="65%"
+  height="auto"
+  [container]="container"
+  [showTitle]="true"
+  [dragEnabled]="true"
+  [resizeEnabled]="true"
+  [hideOnOutsideClick]="false"
+  [showCloseButton]="true"
+  [(visible)]="visibleGesproInfo"
+> 
+  <dxo-position at="center" > </dxo-position>
+  <div *dxTemplate="let data of 'content'">
+    <div class="popup-content">
+      <div class="popup-body item-space-between">
+        <div class="form-content ges-info">
+          <div class="form-item-column">
+            <div class="form-item-data">
+              <div class="form-item-label">Nombre</div>
+              <div class="form-input-box">
+                <dx-text-box
+                  id="txtNombreTarea"
+                  placeholder="Nombre de la actividad..."
+                  class="xt-gestitlex"
+                  width="100%"
+                  height="100%"
+                  maxLength="45"
+                  [(value)]="new_data.NOMBRE"
+                  (onValueChanged)="onValueChangedNombre($event)"
+                >
+                  <dx-validator>
+                    <dxi-validation-rule
+                      type="stringLength"
+                      [min]="5"
+                      [max]="45"
+                      message="Debe tener min:5 y max:45 caracteres*"
+                    ></dxi-validation-rule>
+                  </dx-validator>
+                </dx-text-box>
+              </div>
+            </div>
+
+            <div class="form-item-data">
+              <div class="form-item-label">Responsables</div>
+              <div class="form-input-box">
+                <dx-select-box
+                   [dataSource]="DResponsables"
+                   placeholder="Seleccione Responsables..."
+                   stylingMode="filled"
+                   displayExpr="NOMBRE"
+                   valueExpr="ID_RESPONSABLE"
+                   fieldTemplate="field"
+                   [searchEnabled]="true"
+                   [readOnly]="readOnly"
+                   [dropDownOptions]="{width:400, hideOnParentScroll: true, container:'#router-container'}"
+                   [(value)]="new_data.RESPONSABLES"
+                   (onValueChanged)="onValueRESPONSABLE($event)"
+                 >
+                   <div *dxTemplate="let data of 'field'">
+                       <div style="display: flex; align-items: center; width: 100%;">
+                         <a *ngIf="data && data.FOTO !== '' " class="avatar-content" >
+                           <img
+                             [id]="'USER-'+data.id+data.ITEM"
+                             width="20px"
+                             height="20px"
+                             [src]="data && data.FOTO"
+                             [alt]="data.NOMBRE"
+                           />
+                         </a>
+                         <span *ngIf="data && data.FOTO === '' " class="avatar-content-name">
+                           <span [id]="'USER-'+data.ITEM" >{{ data.iconNameUser }}</span>
+                         </span>
+                         <dx-text-box
+                           class="product-name"
+                           [value]="data && data.NOMBRE"
+                           [readOnly]="false"
+                         ></dx-text-box>
+                       </div>
+                   </div>
+                   <div *dxTemplate="let data of 'item'">
+                     <div class="custom-item">
+                       <div *ngIf="data.FOTO !== '' " style="display: flex; align-items: center;">
+                         <a class="avatar-content">
+                           <img
+                             [id]="'USER-'+data.id+data.ITEM"
+                             width="20px"
+                             height="20px"
+                             [src]="data.FOTO"
+                             [alt]="data.NOMBRE"
+                           />
+                         </a>
+                         <span style="overflow: hidden; margin-left: 5px;"> {{ data.NOMBRE }} </span>
+                       </div>
+                       <div *ngIf="data.FOTO === '' " style="display: flex; align-items: center;">
+                         <span class="avatar-content-name">
+                           <span [id]="'USER-'+data.ITEM">{{ data.iconNameUser }}</span>
+                         </span>
+                         <span style="margin-left: 5px; overflow: hidden;"> {{ data.NOMBRE }} </span>
+                       </div>
+                     </div>
+                   </div>
+                 </dx-select-box>
+              </div>
+            </div>
+
+            <div class="form-item-data">
+              <div class="form-item-label">Colaboradores</div>
+              <div class="form-input-box">
+                <dx-tag-box
+                    [dataSource]="DResponsables"
+                    applyValueMode="useButtons"
+                    placeholder="Seleccione Colaboradores..."
+                    stylingMode="filled"
+                    displayExpr="NOMBRE"
+                    [showSelectionControls]="true"
+                    [maxDisplayedTags]="2"
+                    [multiline]="true"
+                    [readOnly]="readOnly"
+                    [(value)]="new_data.COLABORADORES"
+                    [dropDownOptions]="{width:400, hideOnParentScroll: true, container:'#router-container'}"
+                    (onValueChanged)="onValueRESPONSABLE($event)"
+                  >
+                    <div *dxTemplate="let data of 'item'">
+                      <div style="display: flex; align-items: center; width: 100%;">
+                        <a *ngIf="data.FOTO !== '' " class="avatar-content" >
+                          <img
+                            [id]="'USER-'+data.id+data.ITEM"
+                            width="20px"
+                            height="20px"
+                            [src]="data.FOTO"
+                            [alt]="data.NOMBRE"
+                          />
+                        </a>
+                        <span *ngIf="data.FOTO === '' " class="avatar-content-name">
+                          <span [id]="'USER-'+data.ITEM" >{{ data.iconNameUser }}</span>
+                        </span>
+                        <span style="margin-left: 10px;">{{ data.NOMBRE }}</span>
+                      </div>
+                    </div>
+                  </dx-tag-box>
+              </div>
+            </div>
+
+            <div class="form-item-data">
+              <div class="form-item-label">Rango de Fechas</div>
+              <div class="form-input-box">
+                <dx-date-box
+                  width="48%"
+                  [readOnly]="readOnly"
+                  [value]="new_data.FECHA_INICIO"
+                  placeholder="Fecha inicial..."
+                  type="datetime"
+                  pickerType="calendar"
+                  (onValueChanged)="onValueChangedFechaInicial($event)"
+                ></dx-date-box>
+                <dx-date-box
+                  width="48%"
+                  [readOnly]="readOnly"
+                  [value]="new_data.FECHA_FIN"
+                  placeholder="Fecha final..."
+                  type="datetime"
+                  pickerType="calendar"
+                  (onValueChanged)="onValueChangedFechaFinal($event)"
+                ></dx-date-box>
+              </div>
+            </div>
+            
+            <div class="form-item-data">
+              <div class="form-item-label">Prioridad</div>
+              <div class="form-input-box">
+                <dx-select-box
+                  #selectBox
+                  [readOnly]="readOnly"
+                  [items]="listPrioridad"
+                  [value]="new_data.PRIORIDAD"
+                  (onValueChanged)="onSelectionPrioridad($event)"
+                  class="xt-tag-urgente"
+                >
+                </dx-select-box>
+              </div>
+            </div>
+
+            <div class="form-item-data">
+              <div class="form-item-label">Estado</div>
+              <div class="form-input-box">
+                <dx-select-box
+                  #selectEstado
+                  [readOnly]="readOnly"
+                  [dataSource]="DLEstados"
+                  displayExpr="VALOR1"
+                  valueExpr="VALOR1"
+                  [value]="new_data.ESTADO"
+                  placeholder="Seleccione..."
+                  (onValueChanged)="onSeleccEstado($event)"
+                ></dx-select-box>
+              </div>
+            </div>
+            
+            <div class="form-item-data">
+              <div class="form-item-label">Descripción</div>
+              <div class="form-input-box">
+                <dx-text-area
+                    [height]="90"
+                    [readOnly]="readOnly"
+                    [(value)]="new_data.DESCRIPCION"
+                    (onValueChanged)="onValueChangedDescripcion($event)"
+                  ></dx-text-area>
+              </div>
+            </div>
+          </div>
+        </div>
+  
+        <!-- <hr class="class-hr"> -->
+        <mat-divider  recuadro  vertical > </mat-divider >
+  
+        <div class="form-content">
+          <div class="timeline-body" >
+            <dx-scroll-view width="100%" height="100%">
+              <p-timeline [value]="DTimeline" align="left" styleClass="customized-timeline">
+                <ng-template pTemplate="marker" let-evento>
+                  <span class="custom-marker p-shadow-2" [style.backgroundColor]="evento.color">
+                    <!-- <i [ngClass]="evento.ICON"></i> -->
+                    <i class="icon-programacion-sl"></i>
+                  </span>
+                </ng-template>
+                <ng-template pTemplate="content" let-evento>
+                  <p-card [header]="evento.NOMBRE">
+                    <div class="container-fechas xt-texteditor-clear-x">
+                      <dx-date-box #fechaInicio type="datetime" [readOnly]="true" class="dateBox-fechas" [(value)]="evento.FECHA"></dx-date-box>
+                    </div>
+                    <br>
+                    <p>{{ evento.DESCRIPCION }}</p>
+                    <div *ngIf="evento.ARCHIVOS.length > 0"  >
+                      <p>
+                        <b *ngIf="evento.ARCHIVOS.length === 1">Un archivo adjunto.</b>
+                        <b *ngIf="evento.ARCHIVOS.length > 1">{{evento.ARCHIVOS.length}} archivos adjuntos.</b>
+                        <i class="icon-adjuntar-ol" style="margin-left: 5px;"></i>
+                      </p>
+                      <div class="form-item-flow-wrap">
+                        <!-- <dx-scroll-view #scrollArchivos id="scrollArchivos" width="100%" height="100%" > -->
+                          <div *ngFor="let archivo of evento.ARCHIVOS" style="width: 150px; height: 150px; overflow: hidden; margin: 5px; cursor: pointer;" (click)="onClickAbrir(archivoDoc, archivo)">
+                            <img 
+                              width="100%"
+                              height="100%"
+                              [src]="archivo.IMAGEN"
+                              [alt]="archivo.ARCHIVO"
+                            />
+                          </div>
+                        <!-- </dx-scroll-view> -->
+                      </div>
+                    </div>
+                  </p-card>
+                </ng-template>
+              </p-timeline>
+            </dx-scroll-view>
+          </div>
+          <div class="form-toolbox-cotainer">
+            <div class="form-toolbar-box">
+              <dx-toolbar>
+                <dxi-item
+                  location="before"
+                  widget="dxDropDownButton"
+                  [options]="{
+                    items: itemsFiltro,
+                    icon: 'filter',
+                    displayExpr: 'name',
+                    keyExpr: 'value',
+                    selectedItemKey: 'Novedades',
+                    stylingMode: 'text',
+                    useSelectMode: true,
+                    dropDownOptions: { width: 'auto' },
+                    onSelectionChanged: onSelectionChangedFiltro
+                  }"
+                ></dxi-item>
+              </dx-toolbar>
+            </div>
+  
+            <div class="form-upload-box" *ngIf="mostrarSubirArchivos" >
+              <dx-scroll-view width="100%" height="100%" >
+                <div id="idArchivo" class="form-fileuploader-file-container" *ngFor="let archivo of Darchivos">
+                  <div (click)="onClickAbrir(archivoDoc, archivo)" style="height: 25px; width: 94%; display: flex; align-items: center; justify-content: flex-start;" >
+                    <div class="form-fileuploader-icon-container">
+                      <i [ngClass]="archivo.icon"></i>
+                    </div>
+                    <div class="form-fileuploader-file-label">
+                      {{ archivo.ARCHIVO }}
+                    </div> 
+                  </div>
+                  <div class="form-fileuploader-button-container">
+                    <dx-button
+                      icon="close"
+                      (onClick)="onClickEliminarArchivo($event, archivo)"
+                    ></dx-button>
+                  </div>
+                </div>
+              </dx-scroll-view>
+            </div> 
+          </div>
+
+        </div>
+      </div>
+
+      <div class="popup-footer">
+        <div class="popup-footer-content form-item-row vertical-divider-br">
+          <dx-button
+            id="btnAceptarPT"
+            stylingMode="contained"
+            text="Aceptar"
+            type="default"
+            [width]="100"
+            (onClick)="aceptarBottom($event)"
+          ></dx-button>
+          <dx-button
+            id="btnCancelarPT"
+            stylingMode="contained"
+            text="Cancelar"
+            type="normal"
+            [width]="110"
+            [style.margin-left]="'20px'"
+            (onClick)="closeBottom($event)"
+          ></dx-button>
+        </div>
+
+        <div class="popup-footer-content form-item-column">
+
+          <div class="form-item-data">
+            <div class="form-input-chatbox">
+              <dx-text-box
+                placeholder="Escribe Mensaje..."
+                [showClearButton]="true"
+                [(value)]="mesajeText"
+              ></dx-text-box>
+            </div>
+
+            <div class="form-input-chatsendbox">
+              <dx-button
+                icon="icon-adjuntar-ol"
+                style="margin: 0 .15rem"
+                (onClick)="onClickCargar(new_data)"
+              >
+                <i class="icon-adjuntar-ol" ></i>
+              </dx-button>
+
+              <span style="width: 80%; height: 28px; padding: 5px;" class="style-icon send-icon" (click)="guardarComentarios()"> Enviar </span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</dx-popup>
+
+<dx-load-panel
+  #loaderPanel
+  shadingColor="rgba(0,0,0,0.4)"
+  [position]="{ of: '#div-container-mensaje' }"
+  [(visible)]="loadingVisible"
+  [showIndicator]="true"
+  [showPane]="true"
+  [shading]="true"
+  message="Cargando historial..."
+  [hideOnOutsideClick]="false"
+></dx-load-panel>

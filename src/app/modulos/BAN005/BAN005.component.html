@@ -1,0 +1,80 @@
+<div class="row gx-3">
+    <div class="col-12">
+       <div class="card-content">
+
+            <dx-data-grid
+                #gridSecciones
+                id="gridSecciones"
+                [dataSource]="DSecciones"
+                [showBorders]="true"
+                (onInitNewRow)="initNewRow($event)"
+                (onContentReady)="onContentReady($event)"
+                (onEditingStart)="onEditingStart($event)"
+                (onRowInserting)="insertingRow($event)"
+                (onRowInserted)="insertedRow($event)"
+                (onRowUpdating)="updatingRow($event)"
+                (onRowUpdated)="updatedRow($event)"
+                (onRowClick)="startEdit($event)"
+                (onRowValidating)="onRowValidating($event)"
+                (onSelectionChanged)="onSelectionChanged($event)"
+            >
+                <dxo-paging [enabled]="false"></dxo-paging>
+                <dxo-editing
+                    [useIcons]="true"
+                    mode="row"
+                    [allowUpdating]="true"
+                    [allowAdding]="true"
+                    [allowDeleting]="true"
+                    [confirmDelete]="false"
+                    >
+                </dxo-editing>
+                <dxo-selection mode="multiple"></dxo-selection>
+
+                <dxi-column type="buttons" [width]="110" >
+                    <dxi-button name="edit"></dxi-button>
+                    <dxi-button name="delete" [onClick]="eliminarUsuario"></dxi-button>
+                </dxi-column>
+
+                <dxi-column 
+                    dataField="ID_SECCION" 
+                    caption="Sección"
+                    [allowEditing]="modoEdicion=='new'">
+                </dxi-column>
+
+                <dxi-column dataField="DESCRIPCION" caption="Nombre"></dxi-column>
+
+                <dxi-column 
+                    dataField="ITEM" 
+                    caption="Orden" 
+                    alignment="right" 
+                    [sortIndex]="0"
+                    sortOrder="asc"
+                    [setCellValue]="setCellOrden" 
+                    dataType="number" 
+                    displayFormat="#,##0"
+                    [editorOptions]="{format: '#,##0'}" 
+                    cssClass="clsEncabHis">
+                </dxi-column>
+
+                <dxi-column dataField="TIPO" caption="Color"></dxi-column>
+
+                <dxi-column dataField="ESTADO" caption="Estado"></dxi-column>
+
+                            
+                <dxo-toolbar>
+                    <dxi-item name="addRowButton" showText="always"> </dxi-item>
+                    <dxi-item location="after">
+                        <dx-button
+                            (onClick)="deleteRecords()"
+                            [disabled]="!selectedItemKeys.length"
+                            icon="trash"
+                            text="Eliminar registro"
+                        >
+                        </dx-button>
+                    </dxi-item>
+                </dxo-toolbar>
+            </dx-data-grid>
+
+        </div>
+    </div>
+</div>

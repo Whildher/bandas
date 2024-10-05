@@ -1,0 +1,189 @@
+<div class="bg-login bx-shadow overflow-hidden">
+    <div class="container px-5 py-5 px-md-0 text-start my-5">
+        <div class="row gx-lg-5 align-items-center" style="height:calc(100vh - 200px);">
+            <div class="d-none d-md-block col-md-7 col-xl-8 mb-lg-0 xxl-fontsize" style="z-index: 10">
+                <h1 class="my-3 display-5 fw-bold ls-tight" style="color: rgba(255,255,255,1);">
+                    Bienvenido
+                </h1>
+                <p class="mb-4 opacity-70" style="color: rgba(255,255,255,1);">
+                    Aquí inicia tu camino al exito...
+                </p>
+            </div>
+        
+            <div class="col-12 col-md-5 col-xl-4 mb-lg-0 position-relative text-center">
+                <div id="card_face" class="face card card-rotating bg-glass h-100" style="    width: 350px; height: 470px !important;">
+                    <div class="face face-front">
+                        <div class="card-up loading-logo mt-5">
+                            <img src="assets/img/logo/xtein.svg" width="50%" alt="Logo" />
+                        </div>
+                        
+                        <div class="card-body px-4 py-5 px-md-5 text-center align-middle">
+                            <label class="mb-2" style="font-size:1.25rem; font-weight:300;">Iniciar Sesión</label>
+                            <br>
+    
+                            <form class="from-login row" method="post">
+                                <div class="mb-2">
+                                    <label class="visually-hidden" for="FormGroupData">Usuario</label>
+                                    <div class="input-group input-icon-inside">
+                                        <div class="input-group-text"><i class="icon-usuario"></i></div>
+                                        <input
+                                            id="userName"
+                                            type="text"
+                                            class="form-control"
+                                            placeholder="Username"
+                                            autocomplete="off"
+                                            required
+                                            [formControl]="username"
+                                            [(ngModel)]="loginForm.usuario"
+                                            (focusout)="focusOutFunction($event)"
+                                        />
+                                    </div>
+                                </div>
+                                
+                                <div class="form-outline mb-2">
+                                    <div class="input-group input-icon-inside">
+                                        <div class="input-group-text"><i class="icon-secure-sl"></i></div>
+                                        <input
+                                            id="password"
+                                            type="password"
+                                            class="form-control"
+                                            placeholder="Contraseña"
+                                            required
+                                            autocomplete="current-password"
+                                            autocomplete="off"
+                                            [(ngModel)]="loginForm.contrasena"
+                                        />
+                                    </div>
+                                </div>
+    
+                                <div class="mb-2">
+                                    <div class="input-group input-icon-inside">
+                                        <div class="input-group-text"><i class="icon-building-sl"></i></div>
+                                        <select
+                                            id="empresa"
+                                            name="empresa"
+                                            class="form-control ellipsis"
+                                            required
+                                            [(ngModel)]="loginForm.empresa"
+                                        >
+                                            <option value="" disabled selected hidden > <span> Seleccione Empresa... </span> </option>
+                                            <option *ngFor="let empresa of empresas" [value]="empresa.ID_UN" > {{ empresa.NOMBRE }} </option>
+                                        </select>
+                                    </div>
+                                </div>
+                    
+                                <div class="justify-content-center">
+                                    <button type="submit" class="btn btn-primary btn-block col-12 mb-2" (click)="login(loginForm)">
+                                        Iniciar
+                                    </button>
+                                    <button class="btn-link col-12 text-muted" (click)="onChangePassword($event, 'aceptar')">
+                                        ¿Has olvidado tu contrasena?
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+
+                    <div class="face face-back">
+                        <div class="card-up loading-logo mt-5">
+                            <img src="assets/img/logo/xtein.svg" width="50%" alt="Logo" />
+                        </div>
+
+                        <div class="from-padre card-body text-center align-middle"
+                            style="display: flex; justify-content: flex-start; width: 700px; padding: 0px;">
+                            <div id="input-user" class="px-4 py-5 px-md-5" style="width: 50%;">
+                                <label class="mb-2" style="font-size:1.25rem; font-weight:500;">Has olvidado tu contraseña</label>
+                                <br>
+                                <label>
+                                    Ingrese su usuario y enviaremos un <strong>c&oacute;digo</strong> de restablecimiento a su <strong>número de contacto</strong>.
+                                </label>
+                                <br>
+        
+                                <form class="from-login row">
+                                    <!-- 2 column grid layout with text inputs for the first and last names -->
+                                    <div class="my-2">
+                                        <label class="visually-hidden" for="inlineFormInputGroupUsername">Usuario</label>
+                                        <div class="input-group input-icon-inside">
+                                            <div class="input-group-text"><i class="icon-usuario"></i></div>
+                                            <input type="text" class="form-control" id="inlineFormInputGroupUsername" placeholder="Username" required/>
+                                        </div>
+                                    </div>
+                        
+                                    <div class="justify-content-center">
+                                        <!-- Submit button -->
+                                        <button type="submit" class="btn btn-primary btn-block col-12 mb-1" (click)="onChangePassword($event, 'validar')">
+                                            Enviar
+                                        </button>
+                                        <button class="btn btn-muted col-12" (click)="onChangePassword($event, 'salir')" >
+                                            Cancelar
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+
+                            <div id="input-codigo" class="px-4 py-5 px-md-5" style="width: 50%;">
+                                <label class="mb-2" style="font-size:1.25rem; font-weight:500;">Ingrese su c&oacute;digo</label>
+                                <br>
+                                <label style="line-height: 1.25;">
+                                    Por favor ingrese el <strong>c&oacute;digo</strong> de 6 d&iacute;gitos que env&iacute;amos a su <strong>n&uacute;mero de contacto</strong> registrado.
+                                    <small class="xt-text-sm-l-muted">
+                                        <p>
+                                            Si no lo encuentra su <strong>c&oacute;digo</strong> comun&iacute;quese con el <strong>equipo de soporte</strong> para conocer los pasos a seguir.
+                                        </p>
+                                    </small>
+                                </label>
+        
+                                <form>
+                                    <div class="mb-3 d-flex justify-content-center validation-code">
+                                      <input type="number" class="form-control me-2 text-center" id="digito1" name="digito1" maxlength="1" [(ngModel)]="digitos[0]" (input)="onDigitInput(0)" min="0" max="9" required>
+                                      <input type="number" class="form-control me-2 text-center" id="digito2" name="digito2" maxlength="1" [(ngModel)]="digitos[1]" (input)="onDigitInput(1)" min="0" max="9" required>
+                                      <input type="number" class="form-control me-2 text-center" id="digito3" name="digito3" maxlength="1" [(ngModel)]="digitos[2]" (input)="onDigitInput(2)" min="0" max="9" required>
+                                      <input type="number" class="form-control me-2 text-center" id="digito4" name="digito4" maxlength="1" [(ngModel)]="digitos[3]" (input)="onDigitInput(3)" min="0" max="9" required>
+                                      <input type="number" class="form-control me-2 text-center" id="digito5" name="digito5" maxlength="1" [(ngModel)]="digitos[4]" (input)="onDigitInput(4)" min="0" max="9" required>
+                                      <input type="number" class="form-control text-center" id="digito6" name="digito6" maxlength="1" [(ngModel)]="digitos[5]" (input)="onDigitInput(5)" min="0" max="9" required>
+                                    </div>
+                                    <button type="submit" class="btn btn-primary btn-block col-12 mb-1" [disabled]="!isComplete()">Validar</button>
+                                    <button class="btn btn-muted col-12" (click)="onChangePassword($event, 'salir')" >Cancelar</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- <div class="face_verify">
+                        <div class="card-up loading-logo mt-5">
+                            <img src="assets/img/logo/xtein.svg" width="50%" alt="Logo" />
+                        </div>
+
+                        <div class="card-body px-4 py-5 px-md-5 text-center align-middle">
+                            <div>
+                                <label class="mb-2" style="font-size:1.25rem; font-weight:500;">Ingrese su c&oacute;digo</label>
+                                <br>
+                                <label style="line-height: 1.25;">
+                                    Por favor ingrese el <strong>c&oacute;digo</strong> de 6 d&iacute;gitos que env&iacute;amos a su <strong>n&uacute;mero de contacto</strong> registrado.
+                                    <small class="xt-text-sm-l-muted">
+                                        <p>
+                                            Si no lo encuentra su <strong>c&oacute;digo</strong> comun&iacute;quese con el <strong>equipo de soporte</strong> para conocer los pasos a seguir.
+                                        </p>
+                                    </small>
+                                </label>
+        
+                                <form>
+                                    <div class="mb-3 d-flex justify-content-center validation-code">
+                                      <input type="number" class="form-control me-2 text-center" id="digito1" name="digito1" maxlength="1" [(ngModel)]="digitos[0]" (input)="onDigitInput(0)" min="0" max="9" required>
+                                      <input type="number" class="form-control me-2 text-center" id="digito2" name="digito2" maxlength="1" [(ngModel)]="digitos[1]" (input)="onDigitInput(1)" min="0" max="9" required>
+                                      <input type="number" class="form-control me-2 text-center" id="digito3" name="digito3" maxlength="1" [(ngModel)]="digitos[2]" (input)="onDigitInput(2)" min="0" max="9" required>
+                                      <input type="number" class="form-control me-2 text-center" id="digito4" name="digito4" maxlength="1" [(ngModel)]="digitos[3]" (input)="onDigitInput(3)" min="0" max="9" required>
+                                      <input type="number" class="form-control me-2 text-center" id="digito5" name="digito5" maxlength="1" [(ngModel)]="digitos[4]" (input)="onDigitInput(4)" min="0" max="9" required>
+                                      <input type="number" class="form-control text-center" id="digito6" name="digito6" maxlength="1" [(ngModel)]="digitos[5]" (input)="onDigitInput(5)" min="0" max="9" required>
+                                    </div>
+                                    <button type="submit" class="btn btn-primary btn-block col-12 mb-1" [disabled]="!isComplete()">Validar</button>
+                                    <button class="btn btn-muted col-12" (click)="onChangePassword($event, 'salir')" >Cancelar</button>
+                                </form>
+                            </div>
+                        </div> 
+                    </div>  -->
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

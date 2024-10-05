@@ -1,0 +1,177 @@
+
+<div id="header-aplicacion" class="container-header">
+  <div id="container-header-uno" class="d-none d-md-flex container-header-uno" (resized)="onResized($event, 'barra')">
+    <span class="cls-reg-barra"><app-regbarra></app-regbarra></span>
+  </div>
+  <div id="container-header-dos" class="container-header-dos" (resized)="onResized($event, 'header')">
+    <ul class="class-ul">
+      <li id="icon-buscar-ol-header" class="class-li">
+        <a class="dropdown-toggle class-a" href="#" id="buscarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false" >
+          <i class="icon-buscar-ol"></i>
+        </a>
+
+        <ul class="dropdown-menu subMenu" aria-labelledby="buscarDropdown" style="width: 400px; height: auto; padding:.55rem .75rem;">
+          <dx-select-box
+            width="100%"
+            [dataSource]="DAplicaciones"
+            placeholder="Buscar..."
+            stylingMode="filled"
+            displayExpr="NOMBRE"
+            valueExpr="ID_APLICACION"
+            [searchEnabled]="true"
+            [(value)]="selectAplicacion"
+            (onItemClick)="onSelectBusqueda($event)"
+          ></dx-select-box>
+        </ul>
+
+      </li>
+      <li id="icon-bell-ol-header" class="class-li" >
+        <a class="dropdown-toggle class-a" href="#" id="bellDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false" 
+          [matBadge]="matBadgeNotificaciones > 0 ? matBadgeNotificaciones : '' " matBadgeColor="warn"
+          (click)="abrirNotificaciones($event)"
+        >
+          <i class="icon-bell-ol"></i>
+        </a>
+
+        <ul class="dropdown-menu subMenu" aria-labelledby="bellDropdown" style="width: 300px; max-height: 350px;">
+          <!-- <dx-list
+            height="100%"
+            width="100%"
+            [grouped]="true"
+            [collapsibleGroups]="false"
+            [showSelectionControls]="false"
+            [selectedItemKeys]="[]"
+            selectionMode="single"
+            [dataSource]="notifications"
+          >
+            <div *dxTemplate="let notification of 'group'">
+              <div style="display: flex; align-items: center; justify-content: space-between;" >
+                <div>{{ notification.APLICACION.NOMBRE }}</div>
+                <div class="container-fechas xt-textbox-notify" style="justify-content: flex-end;">
+                  <dx-date-box 
+                    #fechaNotificacion 
+                    type="datetime"
+                    class="dateBox-fechas"
+                    [readOnly]="true"
+                    [useMaskBehavior]="true"
+                    displayFormat="EEEE, HH:mm"
+                    [(value)]="notification.FECHA"
+                    [inputAttr]="{ 'style': 'text-align: end;' }"
+                  ></dx-date-box>
+                </div>
+              </div>
+              <a 
+                class="subMenu-a" style="cursor: pointer;"
+                style="display: flex; align-items: center; position: relative;" 
+                (click)="abrirApl(notification)"
+              >
+                <span [ngClass]="notification.ESTADO === 'Enviado' ? 'position-absolute top-50 end-0 translate-middle p-1 bg-primary border border-light rounded-circle' : '' " ></span>
+                <a class="avatar-content" *ngIf="notification.USUARIO_ENV.FOTO !== '' ">
+                  <img
+                    [id]="'USER-'+notification.ITEM"
+                    width="20px"
+                    height="20px"
+                    [src]="notification.USUARIO_ENV.FOTO"
+                    [alt]="notification.USUARIO_ENV.NOMBRE"
+                  />
+                </a>
+                <span *ngIf="notification.USUARIO_ENV.FOTO === '' " class="avatar-content-name">
+                  <span [id]="'USER-'+notification.ITEM">{{ notification.USUARIO_ENV.iconNameUser }}</span>
+                </span>
+                <div style="display: flex; align-items: center; flex-direction: column; height: 100%; font-size: smaller; line-height: 1.2;" >
+                  <span style="padding-right:1.15rem;"> {{notification.DESCRIPCION}} </span>
+                  <div class="container-fechas xt-textbox-notify">
+                    <dx-date-box #fechaNotificacion type="datetime" [readOnly]="true" class="dateBox-fechas" [(value)]="notification.FECHA"></dx-date-box>
+                  </div>
+                </div>
+              </a>
+            </div>
+          </dx-list> -->
+        </ul>
+
+      </li>
+      <li id="icon-inbox-ol-header" class="class-li">
+        <a class="dropdown-toggle class-a" href="#" id="inboxDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false" 
+        >
+          <i class="icon-inbox-ol"></i>
+        </a>
+        <ul class="dropdown-menu subMenu chat" aria-labelledby="inboxDropdown" style="width: 300px; max-height: 350px;">
+          <!-- <div class="chat"> -->
+            <!-- <span class="chat-label">CHATS</span>
+            <dx-list
+              #listUsuarios
+              id="listUsuarios"
+              [dataSource]="DUsuarios"
+              width="100%"
+              height="100%"
+              [searchEnabled]="true"
+              searchExpr="NOMBRE"
+              searchMode="contains"
+              selectionMode="single"
+              [selectedItemKeys]="selectUsuario"
+              [elementAttr]="{ style: 'cursor: pointer;' }"
+              (onSelectionChanged)="onSelectionChangedUsuario($event)"
+            >
+              <div *dxTemplate="let data of 'item'" style="display: flex; align-items: center; width: 100%;">
+                <span [ngClass]="data.ESTADO === 'ONLINE' ? 'position-absolute top-50 end-0 translate-middle p-1 bg-success border border-light rounded-circle' : '' " ></span>
+                <a *ngIf="data.FOTO !== '' " class="avatar-content" >
+                  <img 
+                    [id]="'USER-'+data.USUARIO"
+                    width="100%"
+                    height="100%"
+                    [src]="data.FOTO"
+                    [alt]="data.NOMBRE"
+                  />
+                </a>
+                <span *ngIf="data.FOTO === '' " class="avatar-content-name" >
+                  <span [id]="'USER-'+data.USUARIO">{{ data.iconNameUser }}</span>
+                </span>
+                <span class="margin-left: 10px;">{{ data.NOMBRE }}</span>
+              </div>
+            </dx-list> -->
+          <!-- </div> -->
+        </ul>
+      </li>
+      <li id="nombres-header" class="class-li">
+        <div class="d-none d-md-flex nombres">
+          <span class="fatory-name">{{ displayEmpresa() }}</span>
+          <span class="user-position">{{ displayUsuario() }}</span>
+        </div>
+        <a *ngIf="!activeIconPerfil" class="dropdown-toggle" href="#" id="headerDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false" >
+          <img src="{{ displayFotoUsuario() }}" alt="{{ displayUsuario() }}" width="35px" height="35px" class="avatar-xt"/>
+        </a>
+        <span *ngIf="activeIconPerfil" class="avatar-content-name" href="#" id="headerDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+          <span>{{ iconNameUser }}</span>
+        </span>
+
+        <ul class="dropdown-menu  subMenu" aria-labelledby="headerDropdown">
+          <li class="subMenu-li" (click)="changePassword()">
+            <a class="subMenu-a" style="cursor: pointer;" >
+              <i class="icon-configuraciones-ol subMenu-i" aria-hidden="true"></i>
+              <span style="margin-left:10px;" >Configuración</span>
+            </a>
+          </li>
+          <li class="subMenu-li" (click)="logout()">
+            <a class="subMenu-a" href="/">
+              <i class="icon-salir-alt-ol subMenu-i" aria-hidden="true"></i>
+              <span style="margin-left:10px;" >Salir</span>
+            </a>
+          </li>
+        </ul>
+
+      </li>
+    </ul>
+  </div>
+</div>
+
+<dx-load-panel
+  #loaderPanel
+  shadingColor="rgba(0,0,0,0.4)"
+  [position]="{ of: '#body-chat' }"
+  [(visible)]="loadingVisible"
+  [showIndicator]="true"
+  [showPane]="true"
+  [shading]="true"
+  message="Cargando..."
+  [hideOnOutsideClick]="false"
+></dx-load-panel>

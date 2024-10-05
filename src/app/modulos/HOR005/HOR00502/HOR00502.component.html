@@ -1,0 +1,56 @@
+<dx-data-grid
+    id="gridConceptos"
+    [dataSource]="DConceptos"
+    keyExpr="ITEM"
+    [showBorders]="true"
+    [showColumnHeaders]="false"
+    width="60%"
+    (onCellPrepared)="onCellPrepared($event)"
+    >
+
+    <dxo-editing
+        mode="cell"
+        [useIcons]="false" 
+        [allowUpdating]="esEdicion"
+        [allowDeleting]="false"
+        [allowAdding]="false"
+        >
+        <dxo-texts
+            confirmDeleteMessage="">
+        </dxo-texts>
+    </dxo-editing>      
+
+    <dxi-column dataField="ITEM"
+        [visible]="false">
+    </dxi-column>
+
+    <dxi-column dataField="DESCRIPCION" [allowEditing]="false"></dxi-column>
+    <dxi-column dataField="SIGNO" width="50" [allowEditing]="false" cellTemplate="tempSigno"></dxi-column>
+    <dxi-column 
+        dataField="VALOR" 
+        alignment="right" 
+        dataType="number" 
+        displayFormat="#,##0"
+        cssClass="clsEncabHis">
+        <dxo-format
+            type="fixedPoint"
+            [precision]="0">
+        </dxo-format>
+    </dxi-column>
+
+    <div *dxTemplate="let cellInfo of 'tempSigno'">
+        {{ cellInfo.data.SIGNO > 0 ? '(+)' : '(-)' }}
+    </div>
+
+    <dxo-summary>
+        <dxi-total-item
+            name="SelectedRowsSummary"
+            summaryType="sum"
+            column="VALOR"
+            showInColumn="FRM_VALOR"
+            displayFormat="TOTAL: {0}"
+            valueFormat="#,##0"
+        >
+        </dxi-total-item>
+    </dxo-summary>
+</dx-data-grid>

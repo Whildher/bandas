@@ -1,0 +1,58 @@
+<div class="row gx-3">
+  <div class="col-12">
+     <div class="card-content">
+      <div>
+        <dx-form
+            #formTarifas
+            id="formTarifas"
+            labelLocation="top"
+            [formData]="FTarifas"
+            [readOnly]="readOnlyForm"
+            [colCount]="1"
+            labelLocation="left"
+            >
+            <dxi-item itemType="group" colCount="2" >
+
+              <dxi-item dataField="ID_TASA" [editorOptions]="{ readOnly: readOnlyLlave }">
+                  <dxo-label text="Código tarifa"></dxo-label>
+                  <dxi-validation-rule
+                      type="async"
+                      message="Esta tarifa ya existe!"
+                      [validationCallback]="ValideExistencia"
+                  >
+                  </dxi-validation-rule>
+                  <dxi-validation-rule type="required" message="Un código es requerido">
+                  </dxi-validation-rule>
+              </dxi-item>
+
+              <dxi-item dataField="DESCRIPCION" >
+                <dxo-label text="Descripción"></dxo-label>
+              </dxi-item>
+
+            </dxi-item>
+
+          </dx-form>
+      </div>
+      <br/>
+  </div>
+</div>
+
+<div class="row gx-3">
+<div class="col-12">
+  <div class="card-content card-grid">
+
+    <app-HOR00301
+      [events]="eventsSubjectItems.asObservable()"
+      (onRespuestaItems)="onRespuestaItems($event)"
+    >
+    </app-HOR00301>
+
+  </div>
+</div>
+</div>
+
+<app-filtrobusq
+  [events]="eventsSubjectFiltro.asObservable()"
+  (onRespuestaSelecc)="onRespuestaFiltro($event)"
+  >
+</app-filtrobusq>

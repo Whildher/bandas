@@ -1,0 +1,3 @@
+::ng-deep .msg-swal {
+    z-index: 99999;
+}

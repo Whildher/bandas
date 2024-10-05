@@ -1,0 +1,14 @@
+/* Alto de fila */
+::ng-deep #gridItemsCotizaciones1 .dx-row > td {
+    padding-top: 0px !important;
+    padding-bottom: 0px !important;
+    height: 20px;
+  }
+  
+  ::ng-deep #gridItemsCotizaciones1 .dx-row{
+    height: 30px !important;
+  }
+  
+  ::ng-deep tr.dx-row.dx-data-row.dx-row-lines {
+    border-top: rgb(214, 221, 255) solid 0.16em !important;
+  }

@@ -1,0 +1,195 @@
+<div class="row gx-3">
+    <div class="col-12">
+       <div class="card-content">
+        <div>
+            <dx-form
+                #formCotizaciones
+                id="formCotizaciones"
+                labelLocation="top"
+                [formData]="FCotizaciones"
+                [readOnly]="readOnlyForm"
+                [colCount]="2"
+                labelLocation="left"
+                >
+                <dxi-item caption="Identificación" itemType="group" >
+
+                    <dxi-item itemType="group" colCount="2" >
+
+                        <dxi-item dataField="DOCUMENTO"
+                            editorType="dxSelectBox"
+                            [editorOptions]="{placeholder:'Documento'}"
+                        >
+                            <dxo-label text="No. Cotizacion"></dxo-label>
+                            <div *dxTemplate>
+                                <dx-select-box
+                                    #xs_DOCUMENTO
+                                    id="xs_DOCUMENTO"
+                                    [dataSource]="DDocumentos" 
+                                    [(value)]="FCotizaciones.DOCUMENTO" 
+                                    [searchEnabled]="true"
+                                    displayExpr="DOCUMENTO"
+                                    valueExpr="DOCUMENTO"
+                                    searchMode="contains"
+                                    [acceptCustomValue]="true"
+                                    [readOnly]="readOnly"
+                                    [dropDownOptions]="dropDownOptions">
+                                >
+                                </dx-select-box>
+                            </div>
+                        </dxi-item>
+
+                    </dxi-item>
+
+                    <dxi-item itemType="group" colCount="2" >
+
+                        <dxi-item dataField="FECHA"editorType="dxDateBox">
+                            <div *dxTemplate>
+                                <dx-date-box 
+                                    type="date" 
+                                    [readOnly]="readOnly" 
+                                    [value]="FCotizaciones.FECHA" 
+                                    (onValueChanged)="onChangeFecha($event)">
+                                </dx-date-box>
+                            </div>
+                            <dxo-label text="Fecha"></dxo-label>
+                        </dxi-item>
+    
+                        <dxi-item dataField="HORA" [editorOptions]="{ readOnly: true }">
+                            <dxo-label text="Hora"></dxo-label>
+                            <div *dxTemplate>
+                                <dx-date-box 
+                                    type="datetime" 
+                                    [readOnly]="true" 
+                                    displayFormat="hh:mm:ss" 
+                                    [value]="FCotizaciones.HORA" >
+                                </dx-date-box>
+                            </div>
+                        </dxi-item>
+    
+                    </dxi-item>
+
+                </dxi-item>
+
+                <dxi-item caption="Estado y Usuario" itemType="group" >
+                    <dxi-item dataField="ESTADO">
+                        <dxo-label text="Estado"></dxo-label>
+                        <div *dxTemplate>
+                            <dx-select-box
+                                #dxEstado
+                                id="dxEstado"
+                                [dataSource]="['ANULADO','REGISTRADO']"
+                                [readOnly]="true"
+                                [(value)]="FCotizaciones.ESTADO"
+                            >
+                            </dx-select-box>
+                        </div>
+                    </dxi-item>
+
+                    <dxi-item dataField="USUARIO" [editorOptions]="{ readOnly: true }" >
+                        <dxo-label text="Usuario"></dxo-label>
+                    </dxi-item>
+                </dxi-item>
+
+                <dxi-item caption="Datos cotización" itemType="group" colSpan="2" >
+
+                    <dxi-item caption="" itemType="group" [colCount]="2" >
+                        <dxi-item dataField="ID_CLIENTE" >
+                            <dxo-label text="Cliente"></dxo-label>
+                            <div *dxTemplate>
+                                <dx-select-box
+                                    #xs_ID_CLIENTE
+                                    id="xs_ID_CLIENTE"
+                                    [dataSource]="DClientesFac" 
+                                    [(value)]="FCotizaciones.ID_CLIENTE" 
+                                    [searchEnabled]="true"
+                                    displayExpr="ID_CLIENTE"
+                                    valueExpr="ID_CLIENTE"
+                                    searchMode="contains"
+                                    [readOnly]="readOnly"
+                                    [dropDownOptions]="dropDownOptionsCliente"
+                                    (onValueChanged)="onSeleccCliente($event)"
+                                    >
+                                    <div *dxTemplate="let data of 'item'">
+                                        <div style="width: 25%; float:left">
+                                            {{ data.ID_CLIENTE }}
+                                        </div>
+                                        
+                                        <div style="width: 75%; float:right;">
+                                            {{ data.NOMBRE_COMPLETO }}
+                                        </div>
+                                    </div>
+
+                                    <div *dxTemplate="let data of 'tempEncab'" style="width: 100%;">
+                                        <dx-button icon="refresh" (onClick)="refreshClick('productos')"></dx-button>
+                                        <div style="float: right;">
+                                            <dx-button 
+                                                icon="runner" 
+                                                text="Crear cliente"
+                                                type="success"
+                                                (onClick)="crearCliente($event, 'clientes')">
+                                            </dx-button>
+                                        </div>
+                                    </div>
+                    
+                                </dx-select-box>
+                            </div>
+                        </dxi-item>
+
+                        <dxi-item dataField="NOMBRE" [editorOptions]="{ readOnly: true }">
+                            <dxo-label text="Nombre"></dxo-label>
+                        </dxi-item>
+
+                        <dxi-item dataField="FECHA_VENCIMIENTO" editorType="dxDateBox">
+                            <dxo-label text="Vigencia"></dxo-label>
+                            <div *dxTemplate>
+                                <dx-date-box 
+                                    type="date" 
+                                    [readOnly]="readOnly" 
+                                    [value]="FCotizaciones.FECHA_VENCIMIENTO" 
+                                    (onValueChanged)="onChangeFecha($event)">
+                                </dx-date-box>
+                            </div>
+                        </dxi-item>
+
+                        <dxi-item dataField="DESCRIPCION" colSpan="2" [editorOptions]="{ readOnly }" >
+                            <dxo-label text="Observaciones"></dxo-label>
+                        </dxi-item>
+
+                    </dxi-item>
+                </dxi-item>
+    
+            </dx-form>
+        </div>
+        <br/>
+    </div>
+</div>
+
+<app-BAN01201
+    [events]="eventsSubjectItems.asObservable()"
+    (onRespuestaItems)="onRespuestaItems($event)"
+>
+</app-BAN01201>
+  
+    
+<dx-load-panel
+  #loaderPanel
+  shadingColor="rgba(0,0,0,0.4)"
+  [position]="{ of: '#router-container' }"
+  [(visible)]="loadingVisible"
+  [showIndicator]="true"
+  [showPane]="true"
+  [shading]="true"
+  message="Un momento. Cargando datos..."
+  [hideOnOutsideClick]="false"
+></dx-load-panel>
+
+<app-filtrobusq
+  [events]="eventsSubjectFiltro.asObservable()"
+  (onRespuestaSelecc)="onRespuestaFiltro($event)"
+  >
+</app-filtrobusq>
+
+<app-geninformes
+  [events]="eventsSubjectInformes.asObservable()" 
+  >
+</app-geninformes>

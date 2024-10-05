@@ -1,0 +1,368 @@
+<div class="row gx-3" >
+    <div class="col-12">
+      <div class="card-content card-grid">
+  
+        <dx-data-grid
+            #gridItemsCotizaciones
+            id="gridItemsCotizaciones"
+            [dataSource]="DItemsCotizaciones"
+            [allowColumnResizing]="true"
+            [columnAutoWidth]="true"
+            columnResizingMode="widget"
+            [columnMinWidth]="50" 
+            [focusedRowEnabled]="true"
+            [rowAlternationEnabled]="true"
+            [hoverStateEnabled]="true"
+            keyExpr="ITEM"
+            noDataText=""
+            [showBorders]="true"
+            [showRowLines]="true"
+            [wordWrapEnabled]="true"
+            (onInitNewRow)="initNewRow($event)"
+            (onRowInserting)="insertingRow($event)"
+            (onRowInserted)="insertedRow($event)"
+            (onRowUpdating)="updatingRow($event)"
+            (onRowUpdated)="updatedRow($event)"
+            (onRowRemoved)="removedRow($event)"
+            (onSelectionChanged)="selectionGrid($event)"
+            (onEditingStart)="onEditingStart($event)"
+            (onEditorPreparing)="onEditorPreparing($event)"
+            (onToolbarPreparing)="onToolbarPreparingGrid($event)"
+            (onRowPrepared)="onRowPrepared($event)"
+            (onRowValidating)="onRowValidating($event)"
+            (onFocusedRowChanged)="onFocusedRowChanged($event)"
+            (onEditCanceled)="onEditCanceled($event)"
+            (onCellPrepared)="onCellPrepared($event)"
+            (onCellClick)="onCellClick($event)"
+            >
+        
+            <dxo-editing
+                mode="cell"
+                [useIcons]="false" 
+                [allowUpdating]="esEdicion"
+                [allowDeleting]="false"
+                [allowAdding]="esEdicion"
+                >
+                <dxo-texts
+                    confirmDeleteMessage="">
+                </dxo-texts>
+            </dxo-editing>      
+            <dxo-selection
+                selectAllMode="allPages"
+                [showCheckBoxesMode]="esVisibleSelecc"
+                mode="multiple">
+            </dxo-selection>
+        
+            <dxi-column dataField="ITEM"
+                [visible]="false">
+            </dxi-column>
+        
+            <dxi-column dataField="PRODUCTO"
+                caption="Producto"
+                calculateDisplayValue="PRODUCTO"
+                width="60%"
+                editCellTemplate="listaProductos">
+            </dxi-column>
+
+            <dxi-column 
+                dataField="CANTIDAD" 
+                caption="Cantidad" 
+                alignment="right" 
+                [setCellValue]="setCellCantidad" 
+                dataType="number" 
+                displayFormat="#,##0.00"
+                [editorOptions]="{format: '#,##0.00'}" 
+                >
+                <dxo-format
+                    type="fixedPoint"
+                    [precision]="2">
+                </dxo-format>
+            </dxi-column>
+
+            <dxi-column dataField="ID_PROVEEDOR"
+                caption="Proveedor"
+                calculateDisplayValue="ID_PROVEEDOR"
+                editCellTemplate="listaProveedores">
+            </dxi-column>
+
+            <dxi-column dataField="FECHA_ENTREGA"
+                caption="Fecha Entrega"
+                dataType="date"
+                format="yyyy/MM/dd">
+            </dxi-column>
+
+            <dxi-column dataField="ID_UDM"
+                caption="UM"
+                calculateDisplayValue="ID_UDM"
+                editCellTemplate="listaUDM"
+                [width]="120"
+                >
+            </dxi-column>
+
+            <dxi-column 
+                dataField="COSTO" 
+                caption="Costo" 
+                alignment="right" 
+                [setCellValue]="setCellCosto" 
+                dataType="number" 
+                displayFormat="#,##0.00"
+                [editorOptions]="{format: '#,##0.00'}" 
+                cssClass="clsEncabHis">
+                <dxo-format
+                    type="fixedPoint"
+                    [precision]="2">
+                </dxo-format>
+            </dxi-column>
+
+            <dxi-column 
+                dataField="FLETE" 
+                caption="Flete" 
+                alignment="right" 
+                [setCellValue]="setCellFlete" 
+                dataType="number" 
+                displayFormat="#,##0.00"
+                [editorOptions]="{format: '#,##0.00'}" 
+                cssClass="clsEncabHis">
+                <dxo-format
+                    type="fixedPoint"
+                    [precision]="2">
+                </dxo-format>
+            </dxi-column>
+
+            <dxi-column dataField="DETALLE"
+                caption="Detalle"
+                calculateDisplayValue="DETALLE">
+            </dxi-column>
+
+            <dxi-column dataField="ADJUNTOS"
+                caption="Adj"
+                cellTemplate="listaAdjuntos"
+                editCellTemplate="listaAdjuntos">
+            </dxi-column>
+
+            <div *dxTemplate="let cellInfo of 'listaProductos'">
+            <dx-select-box 
+                #xs_PRODUCTOS
+                id="xs_PRODUCTOS"
+                [dataSource]="DProductos" 
+                [(value)]="cellInfo.data.PRODUCTO" 
+                valueExpr="PRODUCTO"
+                displayExpr="PRODUCTO"
+                [searchEnabled]="true"
+                searchMode="contains"
+                [searchExpr]="['PRODUCTO']"
+                [dropDownOptions]="dropDownOptionsPro"
+                [acceptCustomValue]="true"
+                (onCustomItemCreating)="onCustomItemCreating($event)"
+                (onValueChanged)="onSeleccRowProducto($event, cellInfo)">
+
+                <div *dxTemplate="let data of 'item'">
+                    <div style="width: 100%; float:left">
+                        {{ data.PRODUCTO }}
+                    </div>
+                    
+                    <!-- <div style="width: 20%; float:right; text-align: right;">
+                        {{ data.PRECIO | number:'1.0-2':'en-US' }}
+                    </div>
+                    
+                    <div style="width: 60%; float:right; 
+                                white-space: nowrap; 
+                                overflow: hidden;
+                                text-overflow: ellipsis; "
+                    >
+                        {{ data.NOMBRE }}
+                    </div> -->
+                </div>
+                <div *dxTemplate="let data of 'tempEncab'" style="width: 100%;">
+                    <div id="btnCompoRefreshSbox">
+                        <dx-button icon="refresh" (onClick)="refreshClick('productos')"></dx-button>
+                    </div>
+                </div>
+            </dx-select-box>
+            </div>
+
+            <div *dxTemplate="let cellInfo of 'listaProveedores'">
+            <dx-select-box 
+                #xs_ID_PROVEEDOR
+                id="xs_ID_PROVEEDOR"
+                [dataSource]="DProveedores" 
+                [(value)]="cellInfo.data.ID_PROVEEDOR" 
+                valueExpr="ID_PROVEEDOR"
+                displayExpr="ID_PROVEEDOR"
+                [searchEnabled]="true"
+                searchMode="contains"
+                [searchExpr]="['ID_PROVEEDOR']"
+                [dropDownOptions]="dropDownOptionsProvee"
+                [acceptCustomValue]="true"
+                (onCustomItemCreating)="onCustomItemCreatingProv($event)"
+                (onValueChanged)="onSeleccRowProveedor($event, cellInfo)">
+
+                <div *dxTemplate="let data of 'item'">
+                    <div style="width: 70%; float:left">
+                        {{ data.ID_PROVEEDOR }}
+                    </div>
+                    
+                    <div style="width: 20%; float:right; text-align: right;">
+                        {{ data.COSTO | number:'1.0-2':'en-US' }}
+                    </div>
+                    
+                    <!-- 
+                    <div style="width: 60%; float:right; 
+                                white-space: nowrap; 
+                                overflow: hidden;
+                                text-overflow: ellipsis; "
+                    >
+                        {{ data.NOMBRE }}
+                    </div> -->
+                </div>
+                <div *dxTemplate="let data of 'tempEncabProv'" style="width: 100%; display:inline-block">
+                    <div id="btnCompoRefreshSbox" style="display: inline; float:right">
+                        <dx-button icon="refresh" (onClick)="refreshClickProv('proveedores')"></dx-button>
+                    </div>
+                    <div style="display: inline; float:left">
+                        <dx-check-box 
+                            #checkProvPro
+                            text="Productos del proveedor"
+                            (onValueChanged)="onProductosProv($event)"
+                            [style.margin-left]="'20px'"
+                        ></dx-check-box>
+                    </div>
+                    </div>
+            </dx-select-box>
+            </div>
+
+            <div *dxTemplate="let cellInfo of 'listaUDM'">
+                <dx-select-box 
+                    #xs_ID__UDM
+                    id="xs_ID_UDM"
+                    [dataSource]="DListaUDM" 
+                    [(value)]="cellInfo.data.ID_UDM" 
+                    [searchEnabled]="true"
+                    displayExpr="ID_UDM"
+                    valueExpr="ID_UDM"
+                    searchMode="contains"
+                    [dropDownOptions]="{ width: 600 }"
+                    (onValueChanged)="onValueChangedUDM($event, cellInfo)"
+                    >
+                    <div *dxTemplate="let data of 'item'">
+                    <div style="width: 30%; float:left">
+                        {{ data.ID_UDM }}
+                    </div>
+                    
+                    <div style="width: 70%; float:right;">
+                        {{ data.NOMBRE }}
+                    </div>
+                    </div>
+            
+                </dx-select-box>
+            </div>
+
+            <div *dxTemplate="let cellInfo of 'listaAdjuntos'">
+            <dx-button icon="attach" (onClick)="onClickAttach($event, cellInfo)"> </dx-button>
+            </div>
+
+            <dxo-toolbar>
+                <dxi-item location="after">
+                    <div *dxTemplate>
+                        <dx-button
+                            (onClick)="pegarDatos()"
+                            icon="paste"
+                            text="Pegar datos"
+                            >
+                        </dx-button>
+                    </div>
+                </dxi-item>
+                <dxi-item location="before">
+                <div *dxTemplate>
+                    <div style="font-size: 16px;">Productos</div> 
+                </div>
+                </dxi-item>
+                <dxi-item *ngIf="esEdicion" location="before">
+                <div *dxTemplate>
+                    <dx-button icon="plus" matTooltip="Nuevo" (onClick)="operGrid($event,'new')" *ngIf="rowNew">
+                    </dx-button>
+                </div>
+                </dxi-item>
+                <dxi-item *ngIf="esEdicion" location="before">
+                <div *dxTemplate>
+                    <dx-button icon="edit" matTooltip="Actualizar" (onClick)="operGrid($event,'update')" *ngIf="rowEdit">
+                    </dx-button>
+                </div>
+                </dxi-item>
+                <dxi-item location="before">
+                <div *dxTemplate>
+                    <dx-button icon="trash" matTooltip="Eliminar" (onClick)="operGrid($event,'delete')" *ngIf="rowDelete">
+                    </dx-button>
+                </div>
+                </dxi-item>
+                <dxi-item  *ngIf="esEdicion" location="before">
+                <div *dxTemplate>
+                    <dx-button icon="todo" matTooltip="Guardar" (onClick)="operGrid($event,'save')" *ngIf="rowApplyChanges">
+                    </dx-button>
+                </div>
+                </dxi-item>
+                <dxi-item  *ngIf="esEdicion" location="before">
+                <div *dxTemplate>
+                    <dx-button icon="undo" matTooltip="Cancelar" (onClick)="operGrid($event,'cancel')" *ngIf="rowApplyChanges">
+                </dx-button>
+                    </div>
+                </dxi-item>
+            </dxo-toolbar>
+        </dx-data-grid>
+
+        </div>
+    </div>
+</div>
+
+<dx-popup 
+    title="Archivos adjuntos"
+    height="100%"
+    [(visible)]="popUpImg"
+    width="100%"
+    [hideOnOutsideClick]="false"
+    [showCloseButton]="true"
+    [shading]="true"
+    (onInitialized)="onInit($event)"
+>
+    <dxi-toolbar-item
+        location="after"
+        toolbar="bottom"
+        > 
+        <dx-button
+            id="btnCancelarPT"
+            stylingMode="contained"
+            text="Confirmar"
+            type="default"
+            (onClick)="aceptaImg()"
+            >
+        </dx-button>
+    </dxi-toolbar-item>
+    <dxi-toolbar-item
+        location="after"
+        toolbar="bottom"
+        > 
+        <dx-button
+            id="btnCancelarPT"
+            stylingMode="contained"
+            text="Cancelar"
+            type="normal"
+            [style.margin-left]="'20px'"
+            (onClick)="cancelaImg()"
+            >
+        </dx-button>
+    </dxi-toolbar-item>
+            
+    <div *dxTemplate="let data of 'content'">
+        <app-file-manager
+            [events]="eventsSubjectAdjuntos.asObservable()"
+            >
+        </app-file-manager>
+    </div>
+</dx-popup>
+
+<app-pegardatos
+    [events]="eventsSubjectPegar.asObservable()"
+    (onRespuestaPegar)="onRespuestaPegar($event)"
+>
+</app-pegardatos>
+

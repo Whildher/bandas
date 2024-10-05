@@ -1,0 +1,9 @@
+::ng-deep .dx-button-has-icon.dx-button-has-text .dx-button-content {
+    padding: 25px 16px;
+}
+::ng-deep #router-container > div > div > div.dx-toolbar.dx-widget.dx-visibility-change-handler.dx-collection.dx-popup-title > div > div.dx-toolbar-before {
+    width: 100%;
+}
+::ng-deep .dx-button-has-icon.dx-button-has-text .dx-button-content {
+    padding: 2px 16px;
+}

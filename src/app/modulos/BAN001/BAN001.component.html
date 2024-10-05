@@ -1,0 +1,126 @@
+<div class="row gx-3">
+    <div class="col-12">
+       <div class="card-content">
+
+            <dx-data-grid
+                #gridUsuarios
+                id="gridUsuarios"
+                [dataSource]="DUsuarios"
+                [showBorders]="true"
+                (onInitNewRow)="initNewRow($event)"
+                (onContentReady)="onContentReady($event)"
+                (onEditingStart)="onEditingStart($event)"
+                (onRowInserting)="insertingRow($event)"
+                (onRowInserted)="insertedRow($event)"
+                (onRowUpdating)="updatingRow($event)"
+                (onRowUpdated)="updatedRow($event)"
+                (onRowClick)="startEdit($event)"
+                (onRowValidating)="onRowValidating($event)"
+                (onSelectionChanged)="onSelectionChanged($event)"
+            >
+                <dxo-paging [enabled]="false"></dxo-paging>
+                <dxo-editing
+                    [useIcons]="true"
+                    mode="row"
+                    [allowUpdating]="true"
+                    [allowAdding]="true"
+                    [allowDeleting]="true"
+                    [confirmDelete]="false"
+                    >
+                </dxo-editing>
+                <dxo-selection mode="multiple"></dxo-selection>
+
+                <dxi-column type="buttons" [width]="110" >
+                    <dxi-button name="edit"></dxi-button>
+                    <dxi-button name="delete" [onClick]="eliminarUsuario"></dxi-button>
+                </dxi-column>
+
+                <dxi-column 
+                    dataField="USUARIO" 
+                    caption="Usuario"
+                    [allowEditing]="modoEdicion=='new'">
+                </dxi-column>
+                <dxi-column dataField="NOMBRE" caption="Nombre"></dxi-column>
+                <dxi-column dataField="CAMBIAR_CLAVE"
+                    caption="Cambiar clave"
+                    calculateDisplayValue="CAMBIAR_CLAVE"
+                    cellTemplate="checkCambioClave"
+                    editCellTemplate="checkCambioClave">
+                </dxi-column>
+                <dxi-column dataField="EMAIL" caption="Email"></dxi-column>
+                <dxi-column 
+                    dataField="AUTORIZACIONES" 
+                    caption="Permisos"
+                    editCellTemplate="tempAutoriz">
+                </dxi-column>
+                <!-- <dxi-column 
+                    dataField="CLAVE" 
+                    [editorOptions]="{ mode: 'password'}"
+                    caption="Contraseña">
+                </dxi-column> -->
+                <dxi-column dataField="ESTADO" caption="Estado"></dxi-column>
+
+                <div *dxTemplate="let cellInfo of 'checkCambioClave'">
+                    <dx-check-box
+                    #chModificar
+                    id="chModificar"
+                    [value]="cellInfo.data.CAMBIAR_CLAVE"
+                    (click)="clickCambioClave($event, cellInfo)"
+                    (onValueChanged)="onValueCambioClave($event, cellInfo)"
+                    >
+                    </dx-check-box>
+                </div>
+
+                <div *dxTemplate="let cellInfo of 'tempAutoriz'">
+                    <dx-drop-down-box
+                        #ddBox
+                        [(value)]="cellInfo.value"
+                        [inputAttr]="{ 'aria-label': 'Owner' }"
+                        valueExpr="ID_APLICACION"
+                        displayExpr="ID_APLICACION"
+                        placeholder="Aplicaciones..."
+                        [showClearButton]="true"
+                        [dataSource]="DAutorizaciones"
+                        [dropDownOptions]="{ width: 400 }"
+                    >
+                        <div *dxTemplate="let templateData of 'content'">
+                            <dx-data-grid
+                                [dataSource]="DAutorizaciones"
+                                keyExpr="ID_APLICACION"
+                                [columns]="['ID_APLICACION','NOMBRE']"
+                                [selection]="{ mode: 'multiple' }"
+                                [hoverStateEnabled]="true"
+                                [paging]="{ enabled: true, pageSize: 10 }"
+                                [filterRow]="{ visible: true }"
+                                [scrolling]="{ mode: 'virtual' }"
+                                [height]="345"
+                                [(selectedRowKeys)]="gridBoxAutoriz"
+                                (onSelectionChanged)="onSelectionAutoriz($event, cellInfo)"
+                                >
+                                <dxo-search-panel
+                                    [visible]="true"
+                                    [width]="240" 
+                                    placeholder="Buscar..." 
+                                ></dxo-search-panel>
+                            </dx-data-grid>
+                        </div>
+                  </dx-drop-down-box>
+                </div>
+                            
+                <dxo-toolbar>
+                    <dxi-item name="addRowButton" showText="always"> </dxi-item>
+                    <dxi-item location="after">
+                        <dx-button
+                        (onClick)="deleteRecords()"
+                        [disabled]="!selectedItemKeys.length"
+                        icon="trash"
+                        text="Delete Selected Records"
+                        >
+                        </dx-button>
+                    </dxi-item>
+                </dxo-toolbar>
+            </dx-data-grid>
+
+        </div>
+    </div>
+</div>

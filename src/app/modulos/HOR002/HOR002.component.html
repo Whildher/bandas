@@ -1,0 +1,301 @@
+<div class="row gx-3">
+    <div class="col-12">
+       <div class="card-content">
+        <div>
+          <dx-form
+              #formPropiedades
+              id="formPropiedades"
+              labelLocation="top"
+              [formData]="FPropiedades"
+              [readOnly]="readOnlyForm"
+              [colCount]="2"
+              labelLocation="left"
+              >
+              <dxi-item caption="Identificación" itemType="group" >
+
+                <dxi-item dataField="ID_PROPIEDAD" [editorOptions]="{ readOnly: readOnlyLlave }">
+                    <dxo-label text="Código"></dxo-label>
+                    <dxi-validation-rule
+                        type="async"
+                        message="Esta propiedad ya existe!"
+                        [validationCallback]="ValideExistencia"
+                    >
+                    </dxi-validation-rule>
+                    <dxi-validation-rule type="required" message="Un código es requerido">
+                    </dxi-validation-rule>
+                </dxi-item>
+
+                <dxi-item itemType="group" colCount="2" >
+
+                  <dxi-item dataField="ID_PROPIEDAD_PADRE" >
+                    <dxo-label text="Código dependiente"></dxo-label>
+                    <div *dxTemplate>
+                        <dx-select-box
+                          #xs_ID_PROPIEDAD_PADRE
+                          id="xs_ID_PROPIEDAD_PADRE"
+                          [dataSource]="DPropiedadesPadre" 
+                          [(value)]="FPropiedades.ID_PROPIEDAD_PADRE" 
+                          [searchEnabled]="true"
+                          displayExpr="ID_PROPIEDAD"
+                          valueExpr="ID_PROPIEDAD"
+                          searchMode="contains"
+                          [readOnly]="readOnly"
+                          [dropDownOptions]="dropDownOptions">
+                        >
+                        </dx-select-box>
+                      </div>
+                  </dxi-item>
+
+                  <dxi-item dataField="OCUPACION" >
+                    <dxo-label text="Ocupación"></dxo-label>
+                    <div *dxTemplate>
+                        <dx-select-box
+                            #dxOcupacion
+                            id="dxOcupacion"
+                            [dataSource]="['Propia','En Arriendo']"
+                            [readOnly]="readOnly"
+                            [(value)]="FPropiedades.OCUPACION"
+                        >
+                        </dx-select-box>
+                      </div>
+                  </dxi-item>
+                </dxi-item>
+
+              </dxi-item>
+
+              <dxi-item caption="Fecha de registro y estado" itemType="group" >
+                  <dxi-item editorType="dxSelectBox" [editorOptions]="{ readOnly: true }">
+                      <dxo-label text="Estado"></dxo-label>
+                      <div *dxTemplate>
+                          <dx-select-box
+                              #dxEstado
+                              id="dxEstado"
+                              [dataSource]="['ACTIVO','INACTIVO']"
+                              [readOnly]="true"
+                              [(value)]="FPropiedades.ESTADO"
+                              (onValueChanged)="onSeleccEstado($event)"
+                          >
+                          </dx-select-box>
+                      </div>
+                  </dxi-item>
+
+                  <dxi-item dataField="FECHA_ADQUISICION"
+                      editorType="dxDateBox"
+                      [editorOptions]="{ readOnly: true }"
+                  >
+                      <dxo-label text="Fecha creación"></dxo-label>
+                  </dxi-item>
+              </dxi-item>
+
+              <dxi-item caption="Detalle propiedad" itemType="group" colSpan="2" colCount="2">
+
+                <dxi-item itemType="group">
+                  <dxi-item dataField="TIPO_INMUEBLE" [editorOptions]="{ readOnly }" >
+                    <dxo-label text="Tipo Inmueble"></dxo-label>
+                    <div *dxTemplate>
+                      <dx-select-box 
+                        #xs_TIPO
+                        id="xs_TIPO"
+                        [dataSource]="DTipos" 
+                        [(value)]="FPropiedades.TIPO_INMUEBLE" 
+                        [searchEnabled]="true"
+                        displayExpr="VALOR1"
+                        valueExpr="VALOR1"
+                        searchMode="contains"
+                        [readOnly]="readOnly"
+                        [dropDownOptions]="dropDownOptions">
+                      </dx-select-box>
+                    </div>
+                  </dxi-item>
+
+                  <dxi-item dataField="NUM_INMUEBLE" [editorOptions]="{ readOnly }" >
+                      <dxo-label text="Nro. Inmueble"></dxo-label>
+                  </dxi-item>
+
+                  <dxi-item dataField="TIPO_INMUEBLE2" [editorOptions]="{ readOnly }" >
+                    <dxo-label text="Id Ubicación"></dxo-label>
+                    <div *dxTemplate>
+                      <dx-select-box 
+                        #xs_TIPO
+                        id="xs_TIPO"
+                        [dataSource]="DTipos" 
+                        [(value)]="FPropiedades.TIPO_INMUEBLE2" 
+                        [searchEnabled]="true"
+                        displayExpr="VALOR1"
+                        valueExpr="VALOR1"
+                        searchMode="contains"
+                        [readOnly]="readOnly"
+                        [dropDownOptions]="dropDownOptions">
+                      </dx-select-box>
+                    </div>
+                  </dxi-item>
+
+                  <dxi-item dataField="NUM_INMUEBLE2" [editorOptions]="{ readOnly }" >
+                      <dxo-label text="Nro. Ubicación"></dxo-label>
+                  </dxi-item>
+
+                  <dxi-item dataField="DOMICILIO" [editorOptions]="{ readOnly }" >
+                    <dxo-label text="Otra Ubicación"></dxo-label>
+                  </dxi-item>
+                </dxi-item>
+
+                <dxi-item itemType="group">
+                  <dxi-item dataField="ID_UBICACION" >
+                    <dxo-label text="Ciudad"></dxo-label>
+                    <div *dxTemplate>
+                        <dx-select-box
+                            #dxCiudad
+                            id="dxCiudad"
+                            [dataSource]="DCiudades"
+                            [readOnly]="readOnly"
+                            [(value)]="FPropiedades.ID_UBICACION"
+                            valueExpr="ID_UBICACION"
+                            [displayExpr]="verCiudad"
+                            (onValueChanged)="onSeleccCiudad($event)"
+                        >
+                        <div *dxTemplate="let data of 'item'">
+                          <div style="width: 40%; float:left">
+                            {{ data.ID_UBICACION }}
+                          </div>
+                          
+                          <div style="width: 60%; float:right; ">
+                            {{ data.NOMBRE }}
+                          </div>
+                        </div>
+                        </dx-select-box>
+                    </div>
+                  </dxi-item>
+
+                  <dxi-item dataField="FECHA_ADQUISICION"
+                    editorType="dxDateBox"
+                    >
+                    <div *dxTemplate>
+                      <dx-date-box 
+                          #xs_FECHA_ADQUISICION
+                          id="xs_FECHA_ADQUISICION"
+                          type="date" 
+                          [readOnly]="readOnly" 
+                          [value]="FPropiedades.FECHA_ADQUISICION" 
+                          (onValueChanged)="onChangeFecha($event)">
+                      </dx-date-box>
+                    </div>
+                    <dxo-label text="Fecha Adquisición"></dxo-label>
+                  </dxi-item>
+
+                  <dxi-item dataField="ID_TARIFA" >
+                    <dxo-label text="Tarifa"></dxo-label>
+                    <div *dxTemplate>
+                        <dx-select-box
+                          #xs_ID_TARIFA
+                          id="xs_ID_TARIFA"
+                          [dataSource]="DTarifas" 
+                          [(value)]="FPropiedades.ID_TARIFA" 
+                          [searchEnabled]="true"
+                          [displayExpr]="verTarifa"
+                          valueExpr="ID_TARIFA"
+                          searchMode="contains"
+                          [acceptCustomValue]="customValTarifa"
+                          [readOnly]="readOnly"
+                          >
+                        <div *dxTemplate="let data of 'item'">
+                          <div style="width: 40%; float:left">
+                            {{ data.ID_TARIFA }}
+                          </div>
+                          
+                          <div style="width: 60%; float:right; ">
+                            {{ data.VALOR | number:'1.0-2':'en-US' }}
+                          </div>
+                        </div>
+                      </dx-select-box>
+                    </div>
+                  </dxi-item>
+
+                  <dxi-item dataField="MATRICULA" [editorOptions]="{ readOnly }" >
+                    <dxo-label text="Matrícula"></dxo-label>
+                  </dxi-item>
+
+                  <dxi-item dataField="DEPENDIENTES" [editorOptions]="{ readOnly }" >
+                    <dxo-label text="Dependientes"></dxo-label>
+                      <div *dxTemplate>
+                        <dx-tag-box
+                        #tagArrendatarios
+                        id="tagArrendatarios"
+                        [dataSource]="DTipos"
+                        displayExpr="VALOR1"
+                        valueExpr="VALOR1"
+                        [multiline]="false"
+                        [(value)]="FPropiedades.DEPENDIENTES"
+                        [searchEnabled]="true"
+                        [readOnly]="readOnly"
+                        [dropDownOptions]="dropDownOptionsArr"
+                        (onValueChanged)="onValueChangedArre($event)"
+                      >
+                      </dx-tag-box>
+                    </div>
+                  </dxi-item>
+
+                </dxi-item>
+    
+              </dxi-item>
+
+              <dxi-item caption="Otros datos" itemType="group" colSpan="2" colCount="2">
+                <dxi-item dataField="TELEFONO" [editorOptions]="{ readOnly }" >
+                  <dxo-label text="Teléfono"></dxo-label>
+                </dxi-item>
+
+                <dxi-item dataField="OBSERVACIONES" [editorOptions]="{ readOnly }" >
+                  <dxo-label text="Observaciones"></dxo-label>
+                </dxi-item>
+              </dxi-item>
+
+            </dx-form>
+        </div>
+        <br/>
+    </div>
+</div>
+
+<div class="row gx-3">
+  <div class="col-12">
+    <div class="card-content card-grid">
+
+      <app-HOR00201
+        [events]="eventsSubjectProp.asObservable()"
+        (onRespuestaProp)="onRespuestaProp($event)"
+      >
+      </app-HOR00201>
+
+    </div>
+  </div>
+</div>
+  
+<div class="row gx-3">
+  <div class="col-12">
+    <div class="card-content card-grid">
+
+      <app-HOR00202
+        [events]="eventsSubjectArre.asObservable()"
+        (onRespuestaArre)="onRespuestaArre($event)"
+      >
+      </app-HOR00202>
+
+    </div>
+  </div>
+</div>
+
+<dx-load-panel
+  #loaderPanel
+  shadingColor="rgba(0,0,0,0.4)"
+  [position]="{ of: '#router-container' }"
+  [(visible)]="loadingVisible"
+  [showIndicator]="true"
+  [showPane]="true"
+  [shading]="true"
+  message="Un momento. Cargando datos..."
+  [hideOnOutsideClick]="false"
+></dx-load-panel>
+
+<app-filtrobusq
+  [events]="eventsSubjectFiltro.asObservable()"
+  (onRespuestaSelecc)="onRespuestaFiltro($event)"
+  >
+</app-filtrobusq>

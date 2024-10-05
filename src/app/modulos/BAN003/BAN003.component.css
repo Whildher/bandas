@@ -1,0 +1,15 @@
+/* Alto de fila */
+::ng-deep #gridClientes .dx-row > td {
+    padding-top: 0px !important;
+    padding-bottom: 0px !important;
+    height: 30px;
+  }
+  
+  ::ng-deep #gridClientes .dx-row{
+    height: 30px !important;
+  }
+  
+  ::ng-deep #gridClientes .dx-row-alt{
+    background-color: aliceblue;
+  }
+  

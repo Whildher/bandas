@@ -1,0 +1,399 @@
+<div class="row gx-3">
+    <div class="col-12">
+       <div class="card-content">
+        <div>
+          <dx-form
+              #formClientes
+              id="formClientes"
+              labelLocation="top"
+              [formData]="FClientes"
+              [readOnly]="readOnlyForm"
+              [colCount]="2"
+              labelLocation="left"
+              >
+              <dxi-item caption="Identificación" itemType="group" >
+
+                  <dxi-item dataField="ID_CLIENTE" [editorOptions]="{ readOnly: readOnlyLlave }">
+                      <dxo-label text="Código"></dxo-label>
+                      <dxi-validation-rule
+                          type="async"
+                          message="Este propietario ya existe!"
+                          [validationCallback]="ValideExistencia"
+                      >
+                      </dxi-validation-rule>
+                      <dxi-validation-rule type="required" message="Un código es requerido">
+                      </dxi-validation-rule>
+                  </dxi-item>
+
+                  <dxi-item dataField="ID_GRUPO" >
+                    <dxo-label text="Grupo"></dxo-label>
+                    <div *dxTemplate>
+                        <dx-select-box
+                            #dxOcupacion
+                            id="dxOcupacion"
+                            [dataSource]="DGrupos"
+                            [readOnly]="readOnly"
+                            valueExpr="ID_GRUPO"
+                            displayExpr="ID_GRUPO"
+                            [(value)]="FClientes.ID_GRUPO"
+                        >
+                        </dx-select-box>
+                      </div>
+                  </dxi-item>
+
+                  <!-- <dxi-item dataField="ID_LEGAL" [style.border]="borderStyle">
+                      <dxo-label text="Id Legal"></dxo-label>
+                      <app-xc-selectbox
+                          #xs_ID_LEGAL
+                          id="xs_ID_LEGAL"
+                          nombreObj="ID_LEGAL"
+                          [readOnly]="readOnly"
+                          [valorDefecto]="FClientes.ID_LEGAL"
+                          [customValue]="customValueSboxIdLegal"
+                          [events]="eventsSubjectSboxIdLegal.asObservable()"
+                          (onRespuestaSelecc)="onSeleccIdLegal($event)"
+                      >
+                      </app-xc-selectbox>
+                  </dxi-item> -->
+              </dxi-item>
+
+              <dxi-item caption="Fecha de registro y estado" itemType="group" >
+                  <dxi-item editorType="dxSelectBox" [editorOptions]="{ readOnly: true }">
+                      <dxo-label text="Estado"></dxo-label>
+                      <div *dxTemplate>
+                          <dx-select-box
+                              #dxEstado
+                              id="dxEstado"
+                              [dataSource]="['ACTIVO','INACTIVO']"
+                              [readOnly]="true"
+                              [(value)]="FClientes.ESTADO"
+                              (onValueChanged)="onSeleccEstado($event)"
+                          >
+                          </dx-select-box>
+                      </div>
+                  </dxi-item>
+
+                  <dxi-item dataField="FECHA_REGISTRO"
+                      editorType="dxDateBox"
+                      [editorOptions]="{ readOnly: true }"
+                  >
+                      <dxo-label text="Fecha de Registro"></dxo-label>
+                  </dxi-item>
+              </dxi-item>
+
+              <dxi-item caption="Detalle propietario" itemType="group" colSpan="2" colCount="2">
+
+                  <dxi-item dataField="NOMBRE" [editorOptions]="{ readOnly }" >
+                    <dxo-label text="Primer Nombre"></dxo-label>
+                  </dxi-item>
+
+                  <dxi-item dataField="NOMBRE2" [editorOptions]="{ readOnly }" >
+                      <dxo-label text="Segundo Nombre"></dxo-label>
+                  </dxi-item>
+
+                  <dxi-item dataField="APELLIDO" [editorOptions]="{ readOnly }" >
+                    <dxo-label text="Primer Apellido"></dxo-label>
+                  </dxi-item>
+
+                  <dxi-item dataField="APELLIDO2" [editorOptions]="{ readOnly }" >
+                      <dxo-label text="Segundo Apellido"></dxo-label>
+                  </dxi-item>
+
+                  <dxi-item dataField="TIPO_ID" >
+                    <dxo-label text="Tipo"></dxo-label>
+                    <div *dxTemplate>
+                        <dx-select-box
+                            #dxTipo
+                            id="dxTipo"
+                            [dataSource]="DTipoIdLegal"
+                            [readOnly]="readOnly"
+                            [(value)]="FClientes.TIPO_ID"
+                            valueExpr="TIPO"
+                            displayExpr="TIPO"
+                            (onValueChanged)="onSeleccTipoIdLegal($event)"
+                        >
+                        </dx-select-box>
+                    </div>
+                  </dxi-item>
+
+                  <dxi-item dataField="PERSONA" >
+                    <dxo-label text="Nat/Jur"></dxo-label>
+                    <div *dxTemplate>
+                        <dx-select-box
+                            #dxPersona
+                            id="dxPersona"
+                            [dataSource]="DPersona"
+                            [readOnly]="readOnly"
+                            [(value)]="FClientes.PERSONA"
+                            valueExpr="PERSONA"
+                            displayExpr="PERSONA"
+                            (onValueChanged)="onSeleccPersona($event)"
+                        >
+                        </dx-select-box>
+                    </div>
+                  </dxi-item>
+    
+              </dxi-item>
+
+              <dxi-item caption="Contacto" itemType="group" colSpan="2" colCount="2">
+                  <dxi-item dataField="DIRECCION" [editorOptions]="{ readOnly }" >
+                  <dxo-label text="Dirección"></dxo-label>
+                </dxi-item>
+
+                <dxi-item dataField="CIUDAD" >
+                  <dxo-label text="Ciudad"></dxo-label>
+                  <div *dxTemplate>
+                      <dx-select-box
+                          #dxPersona
+                          id="dxPersona"
+                          [dataSource]="DCiudades"
+                          [readOnly]="readOnly"
+                          [(value)]="FClientes.CIUDAD"
+                          valueExpr="ID_UBICACION"
+                          displayExpr="ID_UBICACION"
+                          (onValueChanged)="onSeleccCiudad($event)"
+                      >
+                      </dx-select-box>
+                  </div>
+                </dxi-item>
+
+                <dxi-item dataField="TELEFONO" [editorOptions]="{ readOnly }" >
+                  <dxo-label text="Teléfono"></dxo-label>
+                </dxi-item>
+
+                <dxi-item dataField="EMAIL" [editorOptions]="{ readOnly }" >
+                  <dxo-label text="Email"></dxo-label>
+                </dxi-item>
+              </dxi-item>
+
+
+            </dx-form>
+        </div>
+        <br/>
+    </div>
+</div>
+
+<div class="row gx-3">
+    <div class="col-12">
+      <div class="card-content" id="CXP200" #CXP200>
+        <div class="container-child-dos-app xt-gesptabs" >
+
+          <dx-data-grid
+            #gridPropiedades
+            id="gridPropiedades"
+            [dataSource]="DPropiedades"
+            [allowColumnResizing]="true"
+            columnResizingMode="nextColumn"
+            [focusedRowEnabled]="true"
+            [rowAlternationEnabled]="true"
+            [hoverStateEnabled]="true"
+            keyExpr="ITEM"
+            noDataText=""
+            [showBorders]="true"
+            (onInitNewRow)="initNewRow($event)"
+            (onRowInserting)="insertingRow($event)"
+            (onRowInserted)="insertedRow($event)"
+            (onRowUpdating)="updatingRow($event)"
+            (onRowUpdated)="updatedRow($event)"
+            (onRowRemoved)="removedRow($event)"
+            (onEditingStart)="onEditingStart($event)"
+            (onEditorPreparing)="onEditorPreparing($event)"
+            (onToolbarPreparing)="onToolbarPreparingGrid($event)"
+            (onRowPrepared)="onRowPrepared($event)"
+            (onRowValidating)="onRowValidating($event)"
+            (onFocusedRowChanged)="onFocusedRowChanged($event)"
+            (onEditCanceled)="onEditCanceled($event)"
+            (onCellPrepared)="onCellPrepared($event)"
+            (onCellClick)="onCellClick($event)"
+          >
+      
+          <dxo-editing
+            mode="cell"
+            [useIcons]="false" 
+            [allowUpdating]="esEdicion"
+            [allowDeleting]="false"
+            [allowAdding]="esEdicion"
+            >
+            <dxo-texts
+              confirmDeleteMessage="">
+            </dxo-texts>
+          </dxo-editing>      
+          <dxo-selection
+              selectAllMode="allPages"
+              [showCheckBoxesMode]="esVisibleSelecc"
+              mode="multiple">
+          </dxo-selection>
+      
+          <dxi-column dataField="ITEM"
+            [visible]="false">
+          </dxi-column>
+      
+          <dxi-column dataField="TIPO"
+            caption="Tipo"
+            calculateDisplayValue="TIPO"
+            editCellTemplate="listaTipos">
+          </dxi-column>
+      
+          <dxi-column dataField="ID_PROPIEDAD"
+            caption="Id. Propiedad"
+            calculateDisplayValue="ID_PROPIEDAD">
+          </dxi-column>
+      
+          <dxi-column dataField="UBICACION"
+            caption="Ubicación"
+            calculateDisplayValue="UBICACION">
+          </dxi-column>
+      
+          <dxi-column dataField="DOMICILIO"
+            caption="Otro"
+            calculateDisplayValue="DOMICILIO">
+          </dxi-column>
+      
+          <dxi-column dataField="ID_TARIFA"
+            caption="Tarifa"
+            calculateDisplayValue="ID_TARIFA"
+            cellTemplate="verTarifas"
+            editCellTemplate="listaTarifas">
+          </dxi-column>
+
+          <dxi-column dataField="ARRENDATARIO"
+            caption="Arrendatario(s)"
+            calculateDisplayValue="ARRENDATARIO"
+            width="40%"
+            cellTemplate="verArrienda"
+            editCellTemplate="listaArrienda">
+          </dxi-column>
+      
+          <div *dxTemplate="let cellInfo of 'listaTipos'">
+            <dx-select-box 
+              #xs_TIPO
+              id="xs_TIPO"
+              [dataSource]="DTipos" 
+              [(value)]="cellInfo.data.TIPO" 
+              [searchEnabled]="true"
+              displayExpr="VALOR1"
+              valueExpr="VALOR1"
+              searchMode="contains"
+              [dropDownOptions]="dropDownOptions">
+            </dx-select-box>
+          </div>
+      
+          <div *dxTemplate="let cellInfo of 'verArrienda'">
+            {{ cellInfo.data.LISTA_ARRENDATARIOS }}
+          </div>
+          <div *dxTemplate="let cellInfo of 'listaArrienda'">
+            <dx-tag-box
+              #tagArrendatarios
+              id="tagArrendatarios"
+              [dataSource]="DArrendatarios"
+              displayExpr="NOMBRE_COMPLETO"
+              valueExpr="ID_CLIENTE"
+              [multiline]="false"
+              [(value)]="cellInfo.data.ARRENDATARIO" 
+              [searchEnabled]="true"
+              [dropDownOptions]="dropDownOptionsArr"
+              (onValueChanged)="onValueChangedArre($event, cellInfo)"
+            >
+            </dx-tag-box>
+          </div>
+      
+          <div *dxTemplate="let cellInfo of 'verTarifas'">
+            {{ cellInfo.data.LISTA_TARIFA }}
+          </div>
+          <div *dxTemplate="let cellInfo of 'listaTarifas'">
+            <dx-select-box 
+              #xs_ID_TARIFA
+              id="xs_ID_TARIFA"
+              [dataSource]="DTarifas" 
+              [(value)]="cellInfo.data.ID_TARIFA" 
+              [searchEnabled]="true"
+              displayExpr="ID_TARIFA"
+              valueExpr="ID_TARIFA"
+              searchMode="contains"
+              (onValueChanged)="onValueChangedTarifa($event, cellInfo)"
+              >
+              <div *dxTemplate="let data of 'item'">
+                <div style="width: 40%; float:left">
+                  {{ data.ID_TARIFA }}
+                </div>
+                
+                <div style="width: 60%; float:right; text-align: right;">
+                  {{ data.VALOR | number:'1.0-2':'en-US' }}
+                </div>
+              </div>
+
+            </dx-select-box>
+          </div>
+      
+          <dxo-toolbar>
+            <dxi-item location="before">
+              <div *dxTemplate>
+                <div style="font-size: 18;">Propiedades</div> 
+              </div>
+            </dxi-item>
+            <dxi-item *ngIf="esEdicion" location="before">
+              <div *dxTemplate>
+                <dx-button icon="plus" matTooltip="Nuevo" (onClick)="operGrid($event,'new')" *ngIf="rowNew">
+                </dx-button>
+              </div>
+            </dxi-item>
+            <dxi-item *ngIf="esEdicion" location="before">
+              <div *dxTemplate>
+                <dx-button icon="edit" matTooltip="Actualizar" (onClick)="operGrid($event,'update')" *ngIf="rowEdit">
+                </dx-button>
+              </div>
+            </dxi-item>
+            <dxi-item  *ngIf="esEdicion" location="before">
+              <div *dxTemplate>
+                <dx-button icon="trash" matTooltip="Eliminar" (onClick)="operGrid($event,'delete')" *ngIf="rowDelete">
+                </dx-button>
+              </div>
+            </dxi-item>
+            <dxi-item  *ngIf="esEdicion" location="before">
+              <div *dxTemplate>
+                <dx-button icon="todo" matTooltip="Guardar" (onClick)="operGrid($event,'save')" *ngIf="rowApplyChanges">
+                </dx-button>
+              </div>
+            </dxi-item>
+            <dxi-item  *ngIf="esEdicion" location="before">
+              <div *dxTemplate>
+                <dx-button icon="undo" matTooltip="Cancelar" (onClick)="operGrid($event,'cancel')" *ngIf="rowApplyChanges">
+              </dx-button>
+                </div>
+            </dxi-item>
+          </dxo-toolbar>
+        </dx-data-grid>
+
+
+      </div>
+    </div>
+  </div>
+  
+<dx-load-panel
+  #loaderPanel
+  shadingColor="rgba(0,0,0,0.4)"
+  [position]="{ of: '#router-container' }"
+  [(visible)]="loadingVisible"
+  [showIndicator]="true"
+  [showPane]="true"
+  [shading]="true"
+  message="Un momento. Cargando datos..."
+  [hideOnOutsideClick]="false"
+></dx-load-panel>
+
+<app-filtrobusq
+  [events]="eventsSubjectFiltro.asObservable()"
+  (onRespuestaSelecc)="onRespuestaFiltro($event)"
+  >
+</app-filtrobusq>
+
+<app-geninformes
+  [events]="eventsSubjectInformes.asObservable()" 
+  >
+</app-geninformes>
+
+<app-HOR00101
+  [events]="eventsSubjectArre.asObservable()"
+  (onGuardarDatos)="onRespuestaCrear($event)"
+  >
+</app-HOR00101>

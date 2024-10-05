@@ -1,0 +1,1861 @@
+<div id="container-gespro" class="position-relative">
+  
+  <!-- VISTA WEB -->
+  <div class="d-none d-md-block xt-gesptreelist xt-gespdatagrid" style="background-color: #fff; margin-top: 10px;">
+    <dx-tree-list
+      #TreeListTareas
+      id="TreeListTareas"
+      keyExpr="ID_ACTIVIDAD"
+      parentIdExpr="ID_ACTIVIDAD_PADRE"
+      columnResizingMode="nextColumn"
+      [dataSource]="DTareas"
+      [rootValue]="-1"
+      [showRowLines]="true"
+      [showBorders]="true"
+      [columnAutoWidth]="true"
+      [hoverStateEnabled]="true"
+      [focusedRowEnabled]="true"
+      [allowColumnResizing]="true"
+      [allowColumnReordering]="true"
+      [repaintChangesOnly]="true"
+      [focusedRowIndex]="focusedRowIndex"
+      [expandedRowKeys]="[-10, -20, -30, -40, -50]"
+      [(selectedRowKeys)]="filasSeleccTareas"
+      (onCellPrepared)="onCellPrepared($event)"
+      (onRowPrepared)="onRowPrepared($event)"
+      (onCellHoverChanged)="onCellHoverChanged($event, CLASE_TAREAS)"
+      (onInitNewRow)="initNewRow($event, CLASE_TAREAS)"
+      (onRowUpdated)="onRowUpdated($event, CLASE_TAREAS)"
+      (onRowInserted)="onRowInserted($event, CLASE_TAREAS)"
+      (onEditCanceled)="onEditCanceled($event, CLASE_TAREAS)"
+      (onRowValidating)="onRowValidating($event, CLASE_TAREAS)"
+      (onSelectionChanged)="onSelectionChanged($event, CLASE_TAREAS)"
+      (onContextMenuPreparing)="onContextMenuPreparing($event, CLASE_TAREAS)"
+      (onRowClick)="onRowClick($event)"
+    >
+      <dxo-editing
+        mode="row"
+        [useIcons]="false"
+        [allowAdding]="false"
+        [allowUpdating]="false"
+        [allowDeleting]="false"
+      ></dxo-editing>
+  
+      <dxo-scrolling mode="standard"></dxo-scrolling>
+      <dxo-header-filter [visible]="true" width="280" [allowSearch]="true" ></dxo-header-filter>    
+      <dxo-group-panel [visible]="false"></dxo-group-panel>
+      <dxo-grouping [autoExpandAll]="true"></dxo-grouping>
+      <dxo-state-storing
+        [enabled]="true"
+        type="custom"
+        [customLoad]="loadState"
+        [customSave]="saveState"
+      ></dxo-state-storing>
+      <dxo-row-dragging
+        [allowDropInsideItem]="true"
+        [allowReordering]="true"
+        [showDragIcons]="true"
+        [onDragStart]="onDragStart"
+        [onDragChange]="onDragChange"
+        [onReorder]="onReorder"
+      ></dxo-row-dragging>
+  
+      <dxi-column dataField="NOMBRE"
+                  caption="Actividad"
+                  width="450"
+                  [allowHiding]="false"
+                  cellTemplate="cellTempNombre"
+                  editCellTemplate="editTempNombre"
+      ></dxi-column>
+  
+      <dxi-column dataField="RESPONSABLES"
+                  caption="Responsable"
+                  width="150"
+                  [visible]="visibleClase"
+                  cellTemplate="temEditResponsable"
+                  editCellTemplate="temEditResponsable"
+                  [editorOptions]="{placeholder:'Seleccione...'}"
+      >
+        <dxo-header-filter [dataSource]="orderHeaderFilter"></dxo-header-filter>
+      </dxi-column>
+  
+      <dxi-column dataField="COLABORADORES"
+                  caption="Colaboradores"
+                  width="150"
+                  [visible]="visibleClase"
+                  cellTemplate="temColaboradores"
+                  editCellTemplate="temEditColaboradores"
+                  [editorOptions]="{placeholder:'Seleccione...'}"
+      >
+        <dxo-header-filter [dataSource]="orderHeaderFilter"></dxo-header-filter>
+      </dxi-column>
+  
+      <dxi-column dataField="PRIORIDAD"
+                  caption="Prioridad"
+                  width="100"
+                  placeholder="Seleccione..."
+                  cellTemplate="temPrioridad"
+                  editCellTemplate="editTemPrioridad"
+                  [visible]="true"
+      ></dxi-column>
+      
+      <dxi-column dataField="PROGRAMACION"
+                  name="btnProgramar"
+                  caption="Programación"
+                  width="180"
+                  [allowHeaderFiltering]="false"
+                  alignment="center"
+                  cellTemplate="temProgramacion"
+                  editCellTemplate="temProgramacion"
+      ></dxi-column>
+  
+      <dxi-column dataField="ESTADO" 
+                  caption="Estado"
+                  width="120"
+                  cellTemplate="cellTemEstado"
+                  editCellTemplate="editTemEstado"
+                  [editorOptions]="{placeholder:'Seleccione...'}"
+      ></dxi-column>
+  
+      <dxi-column dataField="DESCRIPCION"
+                  caption="Descripción"
+                  width="200"
+                  [allowHeaderFiltering]="false"
+                  [editorOptions]="{placeholder:'Escriba...'}"
+                  editCellTemplate="editTempDescripcionTarea"
+      ></dxi-column>
+  
+      <!-- <dxi-column dataField="TIPO"
+                  caption="Tipo"
+                  width="100"
+                  editCellTemplate="editTemTipo"
+                  [editorOptions]="{placeholder:'Seleccione...'}"
+                  [visible]="false"
+      ></dxi-column> -->
+  
+      <dxi-column dataField="COSTO"
+                  caption="Costo"
+                  width="120"
+                  format="#,##0.00"
+                  alignment="right"
+                  editCellTemplate="temCosto"
+                  [allowHeaderFiltering]="false"
+                  [editorOptions]="{ format: '#,##0.00' }"
+                  [visible]="false"
+      ></dxi-column>
+  
+      <dxi-column name="btnComentarios"
+                  alignment="center" 
+                  cssClass="clsEncabHis"
+                  width="45"
+                  cellTemplate="temVerComentariosTareas"
+                  type="buttons"
+                  [allowHiding]="false"
+                  [allowHeaderFiltering]="false"
+                  [visible]="visiblebtnComentarios"
+      ></dxi-column>
+
+      <div [id]="'cellTempNombre'+cellInfo.data.ITEM" *dxTemplate="let cellInfo of 'cellTempNombre'" style="display: flex;">
+        <div [id]="'containerBtnNuevoTarea'+cellInfo.data.ITEM" style="display: flex; align-items: center; transition: all 0.3s ease; opacity: 0;">
+          <dx-button [id]="'btnNuevoTareaHijo'+cellInfo.data.ITEM" #btnNuevoTareaHijo
+            icon="plus"
+            (onClick)="opPrepararNuevaFila(cellInfo, 'new')"
+          ></dx-button>
+        </div>
+        <span
+          [id]="'txtNombre'+cellInfo.data.ITEM"
+          style="height: 30px; display: flex; align-items: center; width: 100%; transition: all 0.3s ease; transform: translateX(-25px)"
+        >
+          {{ cellInfo.data.NOMBRE }} 
+        </span>
+      </div>
+      <div *dxTemplate="let cellInfo of 'editTempNombre'" style="display: flex;" >
+        <div style="display: flex; align-items: center;" >
+          <dx-button class="btn-width-m btn-guardar" id="btnGuardarCambios" #btnGuardarCambios
+            icon="todo"
+            (onClick)="opPrepararNuevaFila(cellInfo, 'save')"
+          ></dx-button>
+          <dx-button class="btn-width-m btn-cancelar" id="btnCancelarCambios" #btnCancelarCambios
+            icon="undo"
+            (onClick)="opPrepararNuevaFila(cellInfo, 'cancel')"
+          ></dx-button>
+        </div>
+        <dx-text-box
+          id="txtNombreTarea"
+          placeholder="Nombre..."
+          width="100%"
+          height="auto"
+          maxLength="100"
+          [(value)]="cellInfo.data.NOMBRE"
+          (onValueChanged)="onValueChangedNombre($event, cellInfo, CLASE_TAREAS, 'web')"
+        >
+          <dx-validator>
+            <dxi-validation-rule
+              type="stringLength"
+              [min]="5"
+              [max]="100"
+              message="Debe tener min:5 y max:100 caracteres*"
+            ></dxi-validation-rule>
+          </dx-validator>
+        </dx-text-box>
+      </div>
+
+      <div *dxTemplate="let cellInfo of 'temEditResponsable'">
+        <div *ngIf="cellInfo.data.CLASE !== 'NODOS'" >
+          <div *ngIf="cellInfo.data.CLASE === 'RESPONSABILIDADES' " >
+            <dx-select-box
+              #selectResponsablesResponsabilidades
+              id='selectResponsablesResponsabilidades'
+              [dataSource]="DResponsables"
+              placeholder="Seleccione Responsables..."
+              stylingMode="filled"
+              displayExpr="NOMBRE"
+              valueExpr="ID_RESPONSABLE"
+              fieldTemplate="field"
+              [searchEnabled]="true"
+              [grouped]="groupedResponsables"
+              [readOnly]="true"
+              [dropDownOptions]="{width: widthDropDownOptions, hideOnParentScroll: true, container:'#router-container'}"
+              [(value)]="cellInfo.data.RESPONSABLES.ID_RESPONSABLE"
+              (onContentReady)="onInitializedFromResponsables($event, DResponsables, 'html')"
+              (onValueChanged)="onSelectionChangedResponsable($event, cellInfo, CLASE_TAREAS)"
+            >
+              <div *dxTemplate="let data of 'field'">
+                <div *ngIf="APLICACION === 'GES-003'" >
+                  <dx-text-box
+                    class="product-name"
+                    [value]="data && data.NOMBRE"
+                    [readOnly]="true"
+                  ></dx-text-box>
+                </div>
+                <div *ngIf="APLICACION === 'GES-001'" style="display: flex; align-items: center; width: 100%;">
+                  <a *ngIf="data && data.FOTO !== '' " class="avatar-content" >
+                    <img
+                      [id]="'USER-'+data.id+cellInfo.data.ITEM"
+                      width="20px"
+                      height="20px"
+                      [src]="data && data.FOTO"
+                      [alt]="data.NOMBRE"
+                    />
+                  </a>
+                  <span *ngIf="data && data.FOTO === '' " class="avatar-content-name">
+                    <span [id]="'USER-'+cellInfo.data.ITEM" >{{ data.iconNameUser }}</span>
+                  </span>
+                  <dx-text-box
+                    class="product-name"
+                    [value]="data && data.NOMBRE"
+                    [readOnly]="true"
+                  ></dx-text-box>
+                </div>
+              </div>
+              <div *dxTemplate="let data of 'item'">
+                <div *ngIf="APLICACION === 'GES-003'" class="custom-item" >
+                  <dx-text-box
+                    class="product-name"
+                    [value]="data && data.NOMBRE"
+                    [readOnly]="true"
+                  ></dx-text-box>
+                </div>
+                <div *ngIf="APLICACION === 'GES-001'" class="custom-item" >
+                  <div style="display: flex; align-items: center;">
+                    <div *ngIf="data.FOTO !== '' " style="display: flex; align-items: center;">
+                      <a class="avatar-content">
+                        <img
+                          [id]="'USER-'+data.id+cellInfo.data.ITEM"
+                          width="20px"
+                          height="20px"
+                          [src]="data.FOTO"
+                          [alt]="data.NOMBRE"
+                        />
+                      </a>
+                      <span style="overflow: hidden; margin-left: 5px;"> {{ data.NOMBRE }} </span>
+                    </div>
+                    <div *ngIf="data.FOTO === '' " style="display: flex; align-items: center;">
+                      <span class="avatar-content-name">
+                        <span [id]="'USER-'+cellInfo.data.ITEM">{{ data.iconNameUser }}</span>
+                      </span>
+                      <span style="margin-left: 5px; overflow: hidden;"> {{ data.NOMBRE }} </span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </dx-select-box>
+          </div>
+          <div *ngIf="cellInfo.data.CLASE === 'TAREAS' || cellInfo.data.CLASE === 'EVENTOS'" >
+            <dx-select-box
+              #selectResponsables
+              id='selectResponsables'
+              [dataSource]="DResponsables"
+              placeholder="Seleccione Responsables..."
+              stylingMode="filled"
+              displayExpr="NOMBRE"
+              valueExpr="ID_RESPONSABLE"
+              fieldTemplate="field"
+              [searchEnabled]="true"
+              [grouped]="groupedResponsables"
+              [readOnly]="cellInfo.data.readOnlyResponsables"
+              [dropDownOptions]="{width: widthDropDownOptions, hideOnParentScroll: true, container:'#router-container'}"
+              [(value)]="cellInfo.data.RESPONSABLES.ID_RESPONSABLE"
+              (onContentReady)="onInitializedFromResponsables($event, DResponsables, 'html')"
+              (onValueChanged)="onSelectionChangedResponsable($event, cellInfo, CLASE_TAREAS)"
+            >
+              <div *dxTemplate="let data of 'field'">
+                <div *ngIf="APLICACION === 'GES-003'" >
+                  <dx-text-box
+                    class="product-name"
+                    [value]="data && data.NOMBRE"
+                    [readOnly]="true"
+                  ></dx-text-box>
+                </div>
+                <div *ngIf="APLICACION === 'GES-001'" style="display: flex; align-items: center; width: 100%;">
+                  <a *ngIf="data && data.FOTO !== '' " class="avatar-content" >
+                    <img
+                      [id]="'USER-'+data.id+cellInfo.data.ITEM"
+                      width="20px"
+                      height="20px"
+                      [src]="data && data.FOTO"
+                      [alt]="data.NOMBRE"
+                    />
+                  </a>
+                  <span *ngIf="data && data.FOTO === '' " class="avatar-content-name">
+                    <span [id]="'USER-'+cellInfo.data.ITEM" >{{ data.iconNameUser }}</span>
+                  </span>
+                  <dx-text-box
+                    class="product-name"
+                    [value]="data && data.NOMBRE"
+                    [readOnly]="false"
+                  ></dx-text-box>
+                </div>
+              </div>
+              <div *dxTemplate="let data of 'item'">
+                <div *ngIf="APLICACION === 'GES-003'" class="custom-item" >
+                  <dx-text-box
+                    class="product-name"
+                    [value]="data && data.NOMBRE"
+                    [readOnly]="true"
+                  ></dx-text-box>
+                </div>
+                <div *ngIf="APLICACION === 'GES-001'" class="custom-item" >
+                  <div style="display: flex; align-items: center;">
+                    <div *ngIf="data.FOTO !== '' " style="display: flex; align-items: center;">
+                      <a class="avatar-content">
+                        <img
+                          [id]="'USER-'+data.id+cellInfo.data.ITEM"
+                          width="20px"
+                          height="20px"
+                          [src]="data.FOTO"
+                          [alt]="data.NOMBRE"
+                        />
+                      </a>
+                      <span style="overflow: hidden; margin-left: 5px;"> {{ data.NOMBRE }} </span>
+                    </div>
+                    <div *ngIf="data.FOTO === '' " style="display: flex; align-items: center;">
+                      <span class="avatar-content-name">
+                        <span [id]="'USER-'+cellInfo.data.ITEM">{{ data.iconNameUser }}</span>
+                      </span>
+                      <span style="margin-left: 5px; overflow: hidden;"> {{ data.NOMBRE }} </span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </dx-select-box>
+          </div>
+        </div>
+      </div>
+
+      <div  id="temColaboradores" *dxTemplate="let cellInfo of 'temColaboradores'" class="temColaboradores" >
+        <div *ngIf="cellInfo.data.CLASE !== 'NODOS'"  style="display: flex; justify-content: flex-start;">
+          <div *ngFor="let item of cellInfo.data.COLABORADORES">
+            <div style="display: flex; align-items: center;" (mouseenter)="toggleToolTip(item, cellInfo, 'activar')" (mouseout)="toggleToolTip(item, cellInfo, 'salir')" >
+              <a *ngIf="item.FOTO !== ''" class="avatar-content" [id]="'USER-'+item.ID_RESPONSABLE+cellInfo.data.ITEM">
+                <img
+                  width="20px"
+                  height="20px"
+                  [src]="item.FOTO"
+                  [alt]="item.NOMBRE"
+                />
+              </a>
+              <span *ngIf="item.FOTO === ''" class="avatar-content-name" [id]="'USER-'+item.ID_RESPONSABLE+cellInfo.data.ITEM">
+                <span >{{ item.iconNameUser }}</span>
+              </span>
+              <span *ngIf="cellInfo.data.COLABORADORES.length === 1" style="margin-left: 5px; overflow: hidden;"> {{ item.NOMBRE }} </span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div *dxTemplate="let cellInfo of 'temEditColaboradores'">
+        <div *ngIf="cellInfo.data.CLASE !== 'NODOS'" >
+          <dx-tag-box
+            #tagBoxColaboradores
+            id="tagBoxColaboradores"
+            displayExpr="NOMBRE"
+            valueExpr="ID_RESPONSABLE"
+            width="100%"
+            height="36px"
+            applyValueMode="useButtons"
+            itemTemplate="customItem"
+            tagTemplate="customTag"
+            [dataSource]="DColaboradores"
+            [showSelectionControls]="true"
+            [value]="cellInfo.data.COLABORADORES"
+            [dropDownOptions]="{width:400, height:350, hideOnParentScroll: true, container:'#router-container'}"
+            (onContentReady)="onInitializedFromResponsables($event, DColaboradores, 'html')"
+            (onValueChanged)="onValueColaboradores($event, cellInfo, CLASE_TAREAS, 'web')"
+          >
+            <div *dxTemplate="let data of 'customItem'" style="display: flex; align-items: center; width: 100%;">
+              <a *ngIf="data.FOTO !== '' " class="avatar-content" >
+                <img 
+                  [id]="'USER-'+data.ID_RESPONSABLE+cellInfo.data.ITEM"
+                  width="20px"
+                  height="20px"
+                  [src]="data.FOTO"
+                  [alt]="data.NOMBRE"
+                />
+              </a>
+              <span *ngIf="data.FOTO === '' " class="avatar-content-name" >
+                <span [id]="'USER-'+data.ID_RESPONSABLE+cellInfo.data.ITEM">{{ data.iconNameUser }}</span>
+              </span>
+              <span style="margin-left: 10px;">{{ data.NOMBRE }}</span>
+            </div>
+            <div *dxTemplate="let data of 'customTag'">
+              <div style="display: flex; align-items: center; width: 100%;" >
+                <a *ngIf="data.FOTO !== '' "  class="avatar-content" >
+                  <img 
+                    [id]="'USER-'+data.ID_RESPONSABLE+cellInfo.data.ITEM"
+                    width="20px"
+                    height="20px"
+                    [src]="data.FOTO"
+                    [alt]="data.NOMBRE"
+                  />
+                </a>
+                <span *ngIf="data.FOTO === '' " class="avatar-content-name" >
+                  <span [id]="'USER-'+data.ID_RESPONSABLE+cellInfo.data.ITEM">
+                    {{ data.iconNameUser }}
+                  </span>
+                </span>
+                <span *ngIf="cellInfo.data.COLABORADORES.length === 1" class="oscroll-of" style="margin-left: 10px;">{{ data.NOMBRE }}</span>
+              </div>
+            </div>
+          </dx-tag-box>
+
+        </div>
+      </div>
+  
+      <div *dxTemplate="let cellInfo of 'temProgramacion'">
+        <div *ngIf="cellInfo.data.CLASE !== 'NODOS'" (click)="showProgramarFechas($event, cellInfo, 'web')" style="cursor: pointer;">
+          <span
+           *ngIf="cellInfo.data.PROGRAMACION !== '' "
+            [ngStyle]="{'font.size':'.735rem', 'color': 'rgba(10,57,96,.55)' }"
+          >
+            {{ cellInfo.data.PROGRAMACION }}
+          </span>
+          <dx-button 
+            id="btnProgramarFechas"
+            #btnProgramarFechas
+            icon="icon-calendar-sl"
+          >
+            <i class="icon-calendar-sl" ></i>
+          </dx-button>
+        </div>
+      </div>
+  
+      <div *dxTemplate="let cellInfo of 'temMedición'">
+        <div *ngIf="cellInfo.data.CLASE !== 'NODOS'" >
+          <dx-progress-bar
+            [min]="0"
+            [max]="100"
+            height="30px"
+            [value]="cellInfo.data.MEDICION"
+            [showStatus]="true"
+            (onContentReady)="onInitializedProgressBar($event, cellInfo)">
+          </dx-progress-bar>
+        </div>
+      </div>
+  
+      <div *dxTemplate="let cellInfo of 'temPrioridad'">
+        <div *ngIf="cellInfo.data.CLASE !== 'NODOS'" >
+          <div  class="container-flex"
+          [ngStyle]="{'background-color': (cellInfo.data.PRIORIDAD === 'Inmediato' ? 'rgba(223,62,62,.075)':'') ||
+                                                (cellInfo.data.PRIORIDAD === 'Alta' ? 'rgba(237,104,69,.075)':'') ||
+                                                (cellInfo.data.PRIORIDAD === 'Media' ? 'rgba(252,204,72,.1)':'') ||
+                                                (cellInfo.data.PRIORIDAD === 'Baja' ? 'rgba(214,230,55,.15)':''),
+                      'border-color': (cellInfo.data.PRIORIDAD === 'Inmediato' ? 'rgba(223,62,62,.05)':'') ||
+                                              (cellInfo.data.PRIORIDAD === 'Alta' ? 'rgba(237,104,69,.05)':'') ||
+                                              (cellInfo.data.PRIORIDAD === 'Media' ? 'rgba(252,204,72,.075)':'') ||
+                                              (cellInfo.data.PRIORIDAD === 'Baja' ? 'rgba(214,230,55,.075)':'')
+                          }"
+          >
+            <div id="badge-prioridad" class="badge-prioridad"
+                [ngStyle]="{'background-color': (cellInfo.data.PRIORIDAD === 'Inmediato' ? 'rgba(223,62,62,1)':'') ||
+                                                (cellInfo.data.PRIORIDAD === 'Alta' ? 'rgba(237,104,69,1)':'') ||
+                                                (cellInfo.data.PRIORIDAD === 'Media' ? 'rgba(252,204,72,1)':'') ||
+                                                (cellInfo.data.PRIORIDAD === 'Baja' ? 'rgba(214,230,55,1)':'')
+                          }"
+            ></div>
+            <span style="margin-left: 5px;"> {{ cellInfo.data.PRIORIDAD }} </span>
+          </div>
+        </div>
+      </div>
+      <div *dxTemplate="let cellInfo of 'editTemPrioridad'">
+        <div *ngIf="cellInfo.data.CLASE !== 'NODOS'" >
+          <dx-select-box
+            #selectBox
+            [items]="listPrioridad"
+            [value]="cellInfo.data.PRIORIDAD"
+            placeholder="Seleccione..."
+            (onValueChanged)="onSelectionPrioridad($event, cellInfo, CLASE_TAREAS, 'web')"
+          ></dx-select-box>
+        </div>
+      </div>
+  
+      <div *dxTemplate="let cellInfo of 'editTempDescripcionTarea'">
+        <div [id]="'cellDescripcion'+cellInfo.data.ITEM" *ngIf="cellInfo.data.CLASE !== 'NODOS'" >
+          <dx-text-area
+            id="txtDescripcionTarea"
+            placeholder="Descripción..."
+            [height]="36"
+            [(value)]="cellInfo.data.DESCRIPCION"
+            (onValueChanged)="onValueChangedDescripcion($event, cellInfo, CLASE_TAREAS, 'web')"
+          ></dx-text-area>
+        </div>
+      </div>
+  
+      <div *dxTemplate="let cellInfo of 'cellTemEstado'">
+        <div *ngIf="cellInfo.data.CLASE !== 'NODOS'" >
+          <div
+            class="container-estado"
+            [ngStyle]="{'background-color': (cellInfo.data.ESTADO === 'Sin Iniciar' ? 'rgba(15,76,129,.05)':'') ||
+                                            (cellInfo.data.ESTADO === 'En Pausa' ? 'rgba(200,78,224,.2)':'') ||
+                                            (cellInfo.data.ESTADO === 'En Proceso' ? 'rgba(26,115,232,.2)':'') ||
+                                            (cellInfo.data.ESTADO === 'Finalizado' ? 'rgba(53,204,172,.2)':'') ||
+                                            (cellInfo.data.ESTADO === 'Descartada' ? 'rgba(98,121,140, .3)':''),
+                          'color': (cellInfo.data.ESTADO === 'Sin Iniciar' ? 'rgba(98,121,140,.9)':'') ||
+                                              (cellInfo.data.ESTADO === 'En Pausa' ? 'rgba(200,78,224,1)':'') ||
+                                              (cellInfo.data.ESTADO === 'En Proceso' ? 'rgba(26,115,232,1)':'') ||
+                                              (cellInfo.data.ESTADO === 'Finalizado' ? 'rgba(53,204,172,1)':'') ||
+                                              (cellInfo.data.ESTADO === 'Descartada' ? 'rgba(98,121,140,1)':'')
+            }"
+          >
+            <span
+              class="status-badge"
+              [ngStyle]="{'background-color': (cellInfo.data.ESTADO === 'Sin Iniciar' ? 'rgba(98,121,140,.9)':'') ||
+                                              (cellInfo.data.ESTADO === 'En Pausa' ? 'rgba(200,78,224,1)':'') ||
+                                              (cellInfo.data.ESTADO === 'En Proceso' ? 'rgba(26,115,232,1)':'') ||
+                                              (cellInfo.data.ESTADO === 'Finalizado' ? 'rgba(53,204,172,1)':'') ||
+                                              (cellInfo.data.ESTADO === 'Descartada' ? 'rgba(98,121,140,1)':'')
+              }"
+            ></span>
+            <span>{{ cellInfo.data.ESTADO }}</span>
+          </div>
+        </div>
+      </div>
+  
+      <div *dxTemplate="let cellInfo of 'editTemEstado'">
+        <div *ngIf="cellInfo.data.CLASE !== 'NODOS'" >
+          <dx-select-box
+            #selectEstado
+            [dataSource]="DLEstados"
+            displayExpr="VALOR1"
+            valueExpr="VALOR1"
+            [value]="cellInfo.data.ESTADO"
+            placeholder="Seleccione..."
+            (onValueChanged)="onSelectionEstado($event, cellInfo, CLASE_TAREAS, 'web')"
+          ></dx-select-box>
+        </div>
+      </div>
+  
+      <div *dxTemplate="let cellInfo of 'editTemTipo'">
+        <div *ngIf="cellInfo.data.CLASE !== 'NODOS'" >
+          <dx-select-box
+            #selectTipo
+            [items]="['Fija', 'Frecuente', 'Permanente']"
+            [value]="cellInfo.data.TIPO"
+            placeholder="Seleccione..."
+            [readOnly]="cellInfo.data.readOnlyTipo"
+            (onValueChanged)="onSelectionTipo($event, cellInfo, CLASE_TAREAS)"
+          ></dx-select-box>
+        </div>
+      </div>
+  
+      <div *dxTemplate="let cellInfo of 'temCosto'">
+        <div *ngIf="cellInfo.data.CLASE !== 'NODOS'" >
+          <dx-number-box
+            [min]="0"
+            format="#,##0.00"
+            [value]="cellInfo.data.COSTO"
+            (onValueChanged)="onValueChangedCosto($event, cellInfo, CLASE_TAREAS)"
+          ></dx-number-box>
+        </div>
+      </div>
+
+      <div *dxTemplate="let cellInfo of 'temVerComentariosTareas'">
+        <div *ngIf="cellInfo.data.CLASE !== 'NODOS'" >
+          <dx-button id="btnChatsComentariosTareas" #btnChatsComentariosTareas
+            icon="icon-chat-m-sl"
+            [(visible)]="cellInfo.data.visibleBtnComentarios"
+            (onClick)="showChatsComentarios($event, cellInfo)"
+          >
+            <i class="icon-chat-m-sl" ></i>
+          </dx-button>
+        </div>
+      </div>
+  
+      <!-- <dxo-toolbar *ngIf="activeToolbar">
+        <dxi-item location="before">
+          <div *dxTemplate>
+            <dx-button icon="plus" matTooltip="Nuevo" (onClick)="operGrid($event,'new',CLASE_TAREAS)" *ngIf="rowNew">
+            </dx-button>
+          </div>
+        </dxi-item>
+        <dxi-item location="before">
+            <div *dxTemplate>
+              <dx-button icon="todo" matTooltip="Guardar" (onClick)="operGrid($event,'save', CLASE_TAREAS)" *ngIf="rowApplyChanges">
+              </dx-button>
+            </div>
+        </dxi-item>
+        <dxi-item location="before">
+            <div *dxTemplate>
+              <dx-button icon="undo" matTooltip="Cancelar" (onClick)="operGrid($event,'cancel', CLASE_TAREAS)" *ngIf="rowApplyChanges">
+              </dx-button>
+            </div>
+        </dxi-item>
+      </dxo-toolbar> -->
+  
+    </dx-tree-list>
+
+    <dx-popup
+      #popupFechasTareas
+      id="popupFechasTareas"
+      class="popupFechasTareas"
+      [title]="titleActividadSeleccionada"
+      [(width)]="widthPopupFechasTareas"
+      [(height)]="heightPopupFechasTareas"
+      [container]="container"
+      [showTitle]="true"
+      [dragEnabled]="true"
+      [resizeEnabled]="true"
+      [hideOnOutsideClick]="false"
+      [showCloseButton]="false"
+      [visible]="visiblePopupFechas"
+    > 
+      <dxo-position at="center" > </dxo-position>
+      <div *dxTemplate="let data of 'content'">
+        <div class="popup-content">
+          <div class="item-space-between">
+            <div class="form-content" [ngStyle]="{'width': (actividadSeleccionada.REPETIR ? '45%' : '100%')}">
+              <div class="form-item-row item-space-between">
+                <div class="form-item-data-group">
+                  <div class="form-item-label">Todo el día</div>
+                  <dx-switch
+                    class="mx-2"
+                    [readOnly]="readOnlyTodoDia"
+                    [(value)]="actividadSeleccionada.TODO_DIA"
+                    (onValueChanged)="onValueChangedTodoElDia($event, dataEditFila, 'web')"
+                  ></dx-switch>
+                </div>
+                <div class="form-item-data-group">
+                  <div class="form-item-label">Repetir</div>
+                  <dx-switch
+                    class="mx-2"
+                    [readOnly]="readOnlyRepetir"
+                    [(value)]="actividadSeleccionada.REPETIR"
+                    (onValueChanged)="onValueChangedRepetir($event, dataEditFila, 'web')"
+                  ></dx-switch>
+                </div>
+              </div>
+              <br>
+              <div class="form-item-column">
+                <b><i class="icon-calendar-sl" style="padding-right:.55rem;"></i>Rango</b>
+                <div class="form-item-data">
+                  <div class="form-item-label">Fecha Inicio:</div>
+                  <dx-date-box
+                    #fechaInicio
+                    placeholder="Fecha inicial..."
+                    [min]="minDateValue"
+                    [type]="typeDateTime"
+                    [value]="actividadSeleccionada.FECHA_INICIO"
+                    [readOnly]="actividadSeleccionada.readOnlyFechaInicio"
+                    (onValueChanged)="getCalculateDuracion($event, dataEditFila, 'fecha inicio', CLASE_TAREAS, 'web')"
+                  ></dx-date-box>
+                </div>
+                <div class="form-item-data">
+                  <div class="form-item-label">Fecha Final:</div>
+                  <dx-date-box
+                    #fechaFin
+                    placeholder="Fecha final..."
+                    [min]="minDateValue"
+                    [type]="typeDateTime"
+                    [value]="actividadSeleccionada.FECHA_FIN"
+                    [readOnly]="actividadSeleccionada.readOnlyFechaFinal"
+                    (onValueChanged)="getCalculateDuracion($event, dataEditFila, 'fecha fin', CLASE_TAREAS, 'web')"
+                  ></dx-date-box>
+                </div>
+              </div>
+            </div>
+            <mat-divider  recuadro  vertical *ngIf="actividadSeleccionada.REPETIR" > </mat-divider >
+            <div *ngIf="actividadSeleccionada.REPETIR" class="form-content" [ngStyle]="{'width': (actividadSeleccionada.REPETIR ? '55%' : '100%')}">
+              <div class="form-item-column">
+                <div class="form-item-data">
+                  <div class="form-item-label">Frecuencia </div>
+                  <dx-select-box
+                    #selectFrecuencia
+                    [readOnly]="readOnlyFrecuencia"
+                    [dataSource]="['Horas','Diario','Semanal','Mensual','Anual']"
+                    [value]="actividadSeleccionada.FRECUENCIA"
+                    placeholder="Seleccione..."
+                    (onValueChanged)="onSeleccFrecuencia($event, dataEditFila, 'web')"
+                  ></dx-select-box>
+                </div>
+                
+                <div class="form-item-data">
+                  <div class="form-item-label">Cada</div>
+                  <dx-number-box
+                    width="30%"
+                    [min]="0"
+                    [value]="actividadSeleccionada.INTERVALO_FRECUENCIA"
+                    [readOnly]="readOnlyBtnCada"
+                    [showSpinButtons]="true"
+                    [showClearButton]="true"
+                    (onValueChanged)="onSeleccIntervaloFrecuencia($event, dataEditFila, 'web')"
+                  ></dx-number-box>
+                  <small style="margin-left: 6px;">{{ periodoSeleccionado }}</small>
+                </div>
+
+                <div *ngIf="modoSelecionFrecuencia === 'semana'" class="form-item-data" style="width: max-content;">
+                  <mat-button-toggle-group
+                    #group="matButtonToggleGroup"
+                    name="diasSemana"
+                    aria-label="Dias Semana"
+                    multiple
+                    [disabled]="readOnlyFrecuencia"
+                    [value]="actividadSeleccionada.PERIODO_FRECUENCIA"
+                    (change)="onValueChangedPeriodoFrecuencia($event, dataEditFila, 'semana', 'web')"
+                  >
+                    <mat-button-toggle matTooltip="Domingo" value="Domingo">DOM</mat-button-toggle>
+                    <mat-button-toggle matTooltip="Lunes" value="Lunes">LUN</mat-button-toggle>
+                    <mat-button-toggle matTooltip="Martes" value="Martes">MAR</mat-button-toggle>
+                    <mat-button-toggle matTooltip="Miercoles" value="Miercoles">MIÉ</mat-button-toggle>
+                    <mat-button-toggle matTooltip="Jueves" value="Jueves">JUE</mat-button-toggle>
+                    <mat-button-toggle matTooltip="Viernes" value="Viernes">VIE</mat-button-toggle>
+                    <mat-button-toggle matTooltip="Sabado" value="Sabado">SAB</mat-button-toggle>
+                  </mat-button-toggle-group>
+                </div>
+
+                <div *ngIf="modoSelecionFrecuencia === 'mes'" class="form-item-data">
+                    <mat-button-toggle-group
+                      #group="matButtonToggleGroup"
+                      name="diasMes"
+                      aria-label="Dias mes"
+                      multiple
+                      [disabled]="readOnlyFrecuencia"
+                      [value]="actividadSeleccionada.PERIODO_FRECUENCIA"
+                      (change)="onValueChangedPeriodoFrecuencia($event, dataEditFila, 'mes', 'web')"
+                    >
+                      <mat-button-toggle *ngFor="let item of numDiasMes" class="calendar-item" matTooltip="{{item}}" value="{{item}}">{{item}}</mat-button-toggle>
+                    </mat-button-toggle-group>
+                </div>
+
+                <div *ngIf="modoSelecionFrecuencia === 'ano'" class="form-item-data">
+                  <mat-button-toggle-group
+                    #group="matButtonToggleGroup"
+                    name="mesAno"
+                    aria-label="Meses año"
+                    multiple
+                    [disabled]="readOnlyFrecuencia"
+                    [value]="actividadSeleccionada.PERIODO_FRECUENCIA"
+                    (change)="onValueChangedPeriodoFrecuencia($event, dataEditFila, 'ano', 'web')"
+                  >
+                    <mat-button-toggle matTooltip="{{item}}" value="{{item}}" *ngFor="let item of mesAno">{{item}}</mat-button-toggle>
+                  </mat-button-toggle-group>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="popup-footer">
+            <dx-button
+              id="btnAceptarPT"
+              stylingMode="contained"
+              text="Aceptar"
+              type="default"
+              [width]="100"
+              (onClick)="aceptarBottom($event, dataEditFila)"
+            ></dx-button>
+            <dx-button
+              id="btnCancelarPT"
+              stylingMode="contained"
+              text="Cancelar"
+              type="normal"
+              [width]="100"
+              [style.margin-left]="'20px'"
+              (onClick)="closeBottom($event)"
+            ></dx-button>
+          </div>
+        </div>
+      </div>
+    </dx-popup>
+  
+    <dx-popup
+      #configCargosResponsables
+      id="configCargosResponsables"
+      class="configCargosResponsables"
+      width="35%"
+      height="auto"
+      min-height="200px"
+      [title]="titleActividadCargo"
+      container="#TreeListTareas"
+      [showTitle]="true"
+      [dragEnabled]="true"
+      [resizeEnabled]="true"
+      [hideOnOutsideClick]="false"
+      [showCloseButton]="false"
+      [(visible)]="activeConfigCargosResponsables"
+    > 
+      <dxo-position at="center" > </dxo-position>
+      <div *dxTemplate="let data of 'content'">
+        <dx-list
+          #listDCargosResponsable
+          id="listDCargosResponsable"
+          [dataSource]="DCargosResponsable"
+          width="100%"
+          height="80%"
+          selectionMode="single"
+          keyExpr="ID_CARGO"
+          [searchEnabled]="true"
+          [searchExpr]="['ID_CARGO','NOMBRE_CARGO']"
+          [showSelectionControls]="true"
+          (onSelectionChanged)="onSelectionChangedCargoResponsabilidad($event)"
+        >
+          <div *dxTemplate="let item of 'item'">
+            <span><b>{{ item.ID_CARGO }} --</b> {{ item.NOMBRE_CARGO }}</span>
+          </div>
+        </dx-list>
+        <div style="width: 100%; display: flex; justify-content: flex-start; margin-top: 10px;">
+          <dx-button
+            id="btnAceptar"
+            stylingMode="contained"
+            text="Aceptar"
+            type="default"
+            [width]="100"
+            style="background-color: rgba(18,94,220,1) !important; color:#fff;"
+            [disabled]="listDCargosResponsable.selectedItemKeys.length <= 0"
+            (onClick)="asignarTareaCargo($event)"
+          ></dx-button>
+          <dx-button
+            id="btnCancelar"
+            stylingMode="contained"
+            text="Cancelar"
+            type="normal"
+            [width]="110"
+            [style.margin-left]="'20px'"
+            (onClick)="cancelarTareaCargo($event)"
+          ></dx-button>
+        </div>
+      </div>
+    </dx-popup>
+    
+    <GES_INFO></GES_INFO>
+
+  </div>
+  
+  <!-- VISTA MOVIL -->
+  <div class="d-block d-md-none" >
+    <div class="xt-gespaccod">
+      <cdk-accordion class="accordion-container unbg-input" >
+        <cdk-accordion-item
+          *ngFor="let item of grupos; let index = index;"
+          #accordionItem="cdkAccordionItem"
+          class="accordion-item"
+          role="button"
+          tabindex="0"
+          [expanded]="accordionExpand[index]"
+          [attr.id]="'accordion-header-' + index"
+          [attr.aria-expanded]="accordionItem.expanded"
+          [attr.aria-controls]="'accordion-body-' + index"
+        >
+          <div
+            class="accordion-item-header"
+            [ngStyle]="{'background-color': accordionItem.expanded ? 'transparent' : '', 'border-radius': accordionItem.expanded ? '10px 10px 0 0' : '' }"
+          >
+            <div class="accordion-item-group" (click)="accordionItem.toggle()" style="width: 100%;">
+              <div>
+                <span class="accordion-item-description" *ngIf="accordionItem.expanded">
+                  <i class="icon-chevron-up-xs"></i>
+                </span>
+                <span class="accordion-item-description" *ngIf="!accordionItem.expanded">
+                  <i class="icon-chevron-down-xs"></i>
+                </span>
+              </div>
+              <span class="accordion-caption"> {{ item }} </span>
+            </div>
+            <div class="accordion-item-description" *ngIf="item === 'Tareas' || item === 'Eventos'">
+              <div class="spanTotal" style="margin-right: 20px;">
+                <dx-button
+                  icon="plus"
+                  (onClick)="ondblclickCard('nuevo', {'CLASE': 'NODOS', 'TIPO': item})"
+                ></dx-button>
+              </div>
+            </div>
+          </div>
+      
+          <!-- PESTAÑAS/COMPONENTES  -->
+          <div
+            class="accordion-item-body"
+            role="region"
+            [style.display]="accordionItem.expanded ? '' : 'none'"
+            [attr.id]="'accordion-body-' + index"
+            [attr.aria-labelledby]="'accordion-header-' + index"
+          >
+            <div *ngIf="item === 'Responsabilidades'">
+              <div>
+                <mat-card class="card" *ngFor="let responsabilidad of DResponsabilidades" >
+                  <div style="width: 100%; height: 100%; display:flex; justify-content: space-between;">
+                    <div style="width: 5%;">
+                      <div class="btn-drag">
+                        <dx-button icon="overflow" ></dx-button>
+                      </div>
+                    </div>
+                    <div style="width: 95%; height: 100%;" (click)="ondblclickCard('editar', responsabilidad)">
+                      <mat-card-header>
+                        <mat-card-title>
+                          <div style="width: 100%; display: flex; justify-content: space-between; align-items: center;">
+                            <h4 class="xt-card-header-text"> {{ responsabilidad.NOMBRE }} </h4>
+                          </div>
+                        </mat-card-title>
+                        <div *ngIf="responsabilidad.RESPONSABLES.FOTO !== '' " style="display: flex; align-items: center; justify-content: end; width: 10%;">
+                          <a class="avatar-content" >
+                            <img
+                              [id]="'USER-'+responsabilidad.RESPONSABLES.ID_RESPONSABLE"
+                              width="20px"
+                              height="20px"
+                              [src]="responsabilidad.RESPONSABLES.FOTO"
+                              [alt]="responsabilidad.RESPONSABLES.NOMBRE"
+                            />
+                          </a>
+                        </div>
+                        <div *ngIf="responsabilidad.RESPONSABLES.FOTO === '' " style="display: flex; align-items: center; justify-content: end; width: 10%;">
+                          <span class="avatar-content-name">
+                            <span [id]="'USER-'+responsabilidad.RESPONSABLES.ID_RESPONSABLE">{{ responsabilidad.RESPONSABLES.iconNameUser }}</span>
+                          </span>
+                        </div>
+                      </mat-card-header>
+                      <mat-card-content>
+                        <div style="width: 100%; display: flex; justify-content: space-between; align-items: center;">
+                          <div class="conten-descripcion">
+                            <p>{{ responsabilidad.DESCRIPCION }}</p>
+                          </div>
+                          <dx-button id="btnSinIniciar" #btnSinIniciar
+                            icon="icon-chat-m-sl"
+                            (onClick)="showChatsComentarios($event, responsabilidad)"
+                          >
+                            <i class="icon-chat-m-sl" ></i>
+                          </dx-button>
+                        </div>
+                      </mat-card-content>
+                      <mat-card-footer>
+                        <div style="width: 100%; display: flex; justify-content: space-between; align-items: center;">
+                          <div id="itamEstado"
+                            class="container-estado"
+                            [ngStyle]="{'background-color': (responsabilidad.ESTADO === 'Sin Iniciar' ? 'rgba(15,76,129,.05)':'') ||
+                                                            (responsabilidad.ESTADO === 'En Pausa' ? 'rgba(200,78,224,.2)':'') ||
+                                                            (responsabilidad.ESTADO === 'En Proceso' ? 'rgba(26,115,232,.2)':'') ||
+                                                            (responsabilidad.ESTADO === 'Finalizado' ? 'rgba(53,204,172,.2)':'') ||
+                                                            (responsabilidad.ESTADO === 'Descartada' ? 'rgba(98,121,140, .3)':''),
+                                          'color': (responsabilidad.ESTADO === 'Sin Iniciar' ? 'rgba(98,121,140,.9)':'') ||
+                                                              (responsabilidad.ESTADO === 'En Pausa' ? 'rgba(200,78,224,1)':'') ||
+                                                              (responsabilidad.ESTADO === 'En Proceso' ? 'rgba(26,115,232,1)':'') ||
+                                                              (responsabilidad.ESTADO === 'Finalizado' ? 'rgba(53,204,172,1)':'') ||
+                                                              (responsabilidad.ESTADO === 'Descartada' ? 'rgba(98,121,140,1)':'')
+                            }"
+                          >
+                            <span
+                              class="status-badge"
+                              [ngStyle]="{'background-color': (responsabilidad.ESTADO === 'Sin Iniciar' ? 'rgba(98,121,140,.9)':'') ||
+                                                              (responsabilidad.ESTADO === 'En Pausa' ? 'rgba(200,78,224,1)':'') ||
+                                                              (responsabilidad.ESTADO === 'En Proceso' ? 'rgba(26,115,232,1)':'') ||
+                                                              (responsabilidad.ESTADO === 'Finalizado' ? 'rgba(53,204,172,1)':'') ||
+                                                              (responsabilidad.ESTADO === 'Descartada' ? 'rgba(98,121,140,1)':'')
+                              }"
+                            ></span>
+                            <span>{{ responsabilidad.ESTADO }}</span>
+                          </div>
+                          <div></div>
+                          <div>
+                            <span
+                              *ngIf="responsabilidad.PROGRAMACION !== '' "
+                              [ngStyle]="{'font.size':'.735rem', 'color': 'rgba(10,57,96,.55)' }"
+                            >
+                              {{ responsabilidad.PROGRAMACION }}
+                            </span>
+                            <dx-button 
+                              id="btnVerFechas"
+                              #btnVerFechas
+                              icon="icon-calendar-sl"
+                            >
+                              <i class="icon-calendar-sl" ></i>
+                            </dx-button>
+                          </div>
+                        </div>
+                      </mat-card-footer>
+                    </div>
+                  </div>
+                </mat-card>
+              </div>
+            </div>
+            <div *ngIf="item === 'Tareas'">
+              <div >
+                <mat-card class="card" *ngFor="let actividad of DActividades; index as i" >
+                  <div style="width: 100%; height: 100%; display:flex; justify-content: space-between;">
+                    <div style="width: 5%;">
+                      <div class="btn-drag">
+                        <dx-button icon="overflow" ></dx-button>
+                      </div>
+                    </div>
+                    <div style="width: 95%; height: 100%;" (click)="ondblclickCard('editar', actividad)">
+                      <mat-card-header>
+                        <mat-card-title>
+                          <div style="width: 100%; display: flex; justify-content: space-between; align-items: center;">
+                            <h4 class="xt-card-header-text"> {{ actividad.NOMBRE }} </h4>
+                          </div>
+                        </mat-card-title>
+                        <div *ngIf="actividad.RESPONSABLES.FOTO !== '' " style="display: flex; align-items: center; justify-content: end; width: 10%;">
+                          <a class="avatar-content" >
+                            <img
+                              [id]="'USER-'+actividad.ITEM"
+                              width="20px"
+                              height="20px"
+                              [src]="actividad.RESPONSABLES.FOTO"
+                              [alt]="actividad.RESPONSABLES.NOMBRE"
+                            />
+                          </a>
+                        </div>
+                        <div *ngIf="actividad.RESPONSABLES.FOTO === '' " style="display: flex; align-items: center; justify-content: end; width: 10%;">
+                          <span class="avatar-content-name">
+                            <span [id]="'USER-'+actividad.ITEM">{{ actividad.RESPONSABLES.iconNameUser }}</span>
+                          </span>
+                        </div>
+                      </mat-card-header>
+                      <mat-card-content>
+                        <div style="width: 100%; display: flex; justify-content: space-between; align-items: center;">
+                          <div class="conten-descripcion">
+                            <p>{{ actividad.DESCRIPCION }}</p>
+                          </div>
+                          <dx-button id="btnSinIniciar" #btnSinIniciar
+                            icon="icon-chat-m-sl"
+                            (onClick)="showChatsComentarios($event, actividad)"
+                          >
+                            <i class="icon-chat-m-sl" ></i>
+                          </dx-button>
+                        </div>
+                      </mat-card-content>
+                      <mat-card-footer>
+                        <div style="width: 100%; display: flex; justify-content: space-between; align-items: center;">
+                          <div id="itamEstado"
+                            class="container-estado"
+                            [ngStyle]="{'background-color': (actividad.ESTADO === 'Sin Iniciar' ? 'rgba(15,76,129,.05)':'') ||
+                                                            (actividad.ESTADO === 'En Pausa' ? 'rgba(200,78,224,.2)':'') ||
+                                                            (actividad.ESTADO === 'En Proceso' ? 'rgba(26,115,232,.2)':'') ||
+                                                            (actividad.ESTADO === 'Finalizado' ? 'rgba(53,204,172,.2)':'') ||
+                                                            (actividad.ESTADO === 'Descartada' ? 'rgba(98,121,140, .3)':''),
+                                          'color': (actividad.ESTADO === 'Sin Iniciar' ? 'rgba(98,121,140,.9)':'') ||
+                                                              (actividad.ESTADO === 'En Pausa' ? 'rgba(200,78,224,1)':'') ||
+                                                              (actividad.ESTADO === 'En Proceso' ? 'rgba(26,115,232,1)':'') ||
+                                                              (actividad.ESTADO === 'Finalizado' ? 'rgba(53,204,172,1)':'') ||
+                                                              (actividad.ESTADO === 'Descartada' ? 'rgba(98,121,140,1)':'')
+                            }"
+                          >
+                            <span
+                              class="status-badge"
+                              [ngStyle]="{'background-color': (actividad.ESTADO === 'Sin Iniciar' ? 'rgba(98,121,140,.9)':'') ||
+                                                              (actividad.ESTADO === 'En Pausa' ? 'rgba(200,78,224,1)':'') ||
+                                                              (actividad.ESTADO === 'En Proceso' ? 'rgba(26,115,232,1)':'') ||
+                                                              (actividad.ESTADO === 'Finalizado' ? 'rgba(53,204,172,1)':'') ||
+                                                              (actividad.ESTADO === 'Descartada' ? 'rgba(98,121,140,1)':'')
+                              }"
+                            ></span>
+                            <span>{{ actividad.ESTADO }}</span>
+                          </div>
+                          <div></div>
+                          <div>
+                            <span
+                              *ngIf="actividad.PROGRAMACION !== '' "
+                              [ngStyle]="{'font.size':'.735rem', 'color': 'rgba(10,57,96,.55)' }"
+                            >
+                              {{ actividad.PROGRAMACION }}
+                            </span>
+                            <dx-button 
+                              id="btnVerFechas"
+                              #btnVerFechas
+                              icon="icon-calendar-sl"
+                            >
+                              <i class="icon-calendar-sl" ></i>
+                            </dx-button>
+                          </div>
+                        </div>
+                      </mat-card-footer>
+                    </div>
+                  </div>
+                </mat-card>
+              </div>
+            </div>
+            <div *ngIf="item === 'Eventos'">
+              <div>
+                <mat-card class="card" *ngFor="let evento of DEventos" >
+                  <div style="width: 100%; height: 100%; display:flex; justify-content: space-between;">
+                    <div style="width: 5%;">
+                      <div class="btn-drag">
+                        <dx-button icon="overflow" ></dx-button>
+                      </div>
+                    </div>
+                    <div style="width: 95%; height: 100%;" (click)="ondblclickCard('editar', evento)">
+                      <mat-card-header>
+                        <mat-card-title>
+                          <div style="width: 100%; display: flex; justify-content: space-between; align-items: center;">
+                            <h4 class="xt-card-header-text"> {{ evento.NOMBRE }} </h4>
+                          </div>
+                        </mat-card-title>
+                        <div *ngIf="evento.RESPONSABLES.FOTO !== '' " style="display: flex; align-items: center; justify-content: end; width: 10%;">
+                          <a class="avatar-content" >
+                            <img
+                              [id]="'USER-'+evento.ITEM"
+                              width="20px"
+                              height="20px"
+                              [src]="evento.RESPONSABLES.FOTO"
+                              [alt]="evento.RESPONSABLES.NOMBRE"
+                            />
+                          </a>
+                        </div>
+                        <div *ngIf="evento.RESPONSABLES.FOTO === '' " style="display: flex; align-items: center; justify-content: end; width: 10%;">
+                          <span class="avatar-content-name">
+                            <span [id]="'USER-'+evento.ITEM">{{ evento.RESPONSABLES.iconNameUser }}</span>
+                          </span>
+                        </div>
+                      </mat-card-header>
+                      <mat-card-content>
+                        <div style="width: 100%; display: flex; justify-content: space-between; align-items: center;">
+                          <div class="conten-descripcion">
+                            <p>{{ evento.DESCRIPCION }}</p>
+                          </div>
+                          <dx-button id="btnSinIniciar" #btnSinIniciar
+                            icon="icon-chat-m-sl"
+                            (onClick)="showChatsComentarios($event, evento)"
+                          >
+                            <i class="icon-chat-m-sl" ></i>
+                          </dx-button>
+                        </div>
+                      </mat-card-content>
+                      <mat-card-footer>
+                        <div style="width: 100%; display: flex; justify-content: space-between; align-items: center;">
+                          <div id="itamEstado"
+                            class="container-estado"
+                            [ngStyle]="{'background-color': (evento.ESTADO === 'Sin Iniciar' ? 'rgba(15,76,129,.05)':'') ||
+                                                            (evento.ESTADO === 'En Pausa' ? 'rgba(200,78,224,.2)':'') ||
+                                                            (evento.ESTADO === 'En Proceso' ? 'rgba(26,115,232,.2)':'') ||
+                                                            (evento.ESTADO === 'Finalizado' ? 'rgba(53,204,172,.2)':'') ||
+                                                            (evento.ESTADO === 'Descartada' ? 'rgba(98,121,140, .3)':''),
+                                          'color': (evento.ESTADO === 'Sin Iniciar' ? 'rgba(98,121,140,.9)':'') ||
+                                                              (evento.ESTADO === 'En Pausa' ? 'rgba(200,78,224,1)':'') ||
+                                                              (evento.ESTADO === 'En Proceso' ? 'rgba(26,115,232,1)':'') ||
+                                                              (evento.ESTADO === 'Finalizado' ? 'rgba(53,204,172,1)':'') ||
+                                                              (evento.ESTADO === 'Descartada' ? 'rgba(98,121,140,1)':'')
+                            }"
+                          >
+                            <span
+                              class="status-badge"
+                              [ngStyle]="{'background-color': (evento.ESTADO === 'Sin Iniciar' ? 'rgba(98,121,140,.9)':'') ||
+                                                              (evento.ESTADO === 'En Pausa' ? 'rgba(200,78,224,1)':'') ||
+                                                              (evento.ESTADO === 'En Proceso' ? 'rgba(26,115,232,1)':'') ||
+                                                              (evento.ESTADO === 'Finalizado' ? 'rgba(53,204,172,1)':'') ||
+                                                              (evento.ESTADO === 'Descartada' ? 'rgba(98,121,140,1)':'')
+                              }"
+                            ></span>
+                            <span>{{ evento.ESTADO }}</span>
+                          </div>
+                          <div></div>
+                          <div>
+                            <span
+                              *ngIf="evento.PROGRAMACION !== '' "
+                              [ngStyle]="{'font.size':'.735rem', 'color': 'rgba(10,57,96,.55)' }"
+                            >
+                              {{ evento.PROGRAMACION }}
+                            </span>
+                            <dx-button 
+                              id="btnVerFechas"
+                              #btnVerFechas
+                              icon="icon-calendar-sl"
+                            >
+                              <i class="icon-calendar-sl" ></i>
+                            </dx-button>
+                          </div>
+                        </div>
+                      </mat-card-footer>
+                    </div>
+                  </div>
+                </mat-card>
+              </div>
+            </div>
+          </div>
+      
+        </cdk-accordion-item>
+      </cdk-accordion>
+    </div>
+  
+    <!-- EDITAR TAREAS EN POPUP -->
+    <dx-popup
+      #popupEditarTareasMovil
+      id="popupEditarTareasMovil"
+      width="100%"
+      height="100%"
+      [showTitle]="true"
+      [dragEnabled]="false"
+      [resizeEnabled]="true"
+      [hideOnOutsideClick]="false"
+      [showCloseButton]="true"
+      [fullScreen]="true"
+      titleTemplate="titleTemplate"
+      [visible]="visiblePopupEditarTareas"
+    > 
+      <dxo-position my='center' at='center' of=window > </dxo-position>
+      <div *dxTemplate="let data of 'titleTemplate'" style="display: flex; align-items: center; justify-content: space-between;">
+        <div style="width: 90%; height: 50px;">
+          <dx-text-box
+            id="txtNombreTarea"
+            placeholder="Nombre de la actividad..."
+            class="xt-gestitlex"
+            width="100%"
+            height="100%"
+            maxLength="45"
+            [(value)]="FTareas.NOMBRE"
+            (onValueChanged)="onValueChangedNombre($event, data, CLASE_TAREAS, 'movil')"
+          >
+            <dx-validator>
+              <dxi-validation-rule
+                type="stringLength"
+                [min]="5"
+                [max]="45"
+                message="Debe tener min:5 y max:45 caracteres*"
+              ></dxi-validation-rule>
+            </dx-validator>
+          </dx-text-box>
+        </div>
+        <div style="width: 10%; height: 50px; display: flex; align-items: center; justify-content: end;">
+          <dx-button
+            icon="close"
+            (onClick)="cancelarTarea($event)"
+          ></dx-button>
+        </div>
+      </div>
+      <div *dxTemplate="let data of 'content'" class="xt-gespaccod">
+        <dx-scroll-view width="100%" height="100%">
+
+          <cdk-accordion class="accordion-container unbg-input" >
+            <cdk-accordion-item
+              *ngFor="let item of itemsRegistroTareas; let index = index;"
+              #accordionItem="cdkAccordionItem"
+              class="accordion-item"
+              role="button"
+              tabindex="0"
+              [expanded]="accordionPopupMovilExpand[index]"
+              [attr.id]="'accordion-header-' + index"
+              [attr.aria-expanded]="accordionItem.expanded"
+              [attr.aria-controls]="'accordion-body-' + index"
+            >
+              <div
+                (click)="accordionItem.toggle()"
+                class="accordion-item-header"
+                [ngStyle]="{'background-color': accordionItem.expanded ? 'transparent' : '', 'border-radius': accordionItem.expanded ? '10px 10px 0 0' : '' }"
+              >
+                <div class="accordion-item-group">
+                  <div>
+                    <span class="accordion-item-description" *ngIf="accordionItem.expanded">
+                      <i class="icon-chevron-up-xs"></i>
+                    </span>
+                    <span class="accordion-item-description" *ngIf="!accordionItem.expanded">
+                      <i class="icon-chevron-down-xs"></i>
+                    </span>
+                  </div>
+                  <span class="accordion-caption"> {{ item }} </span>
+                </div>
+              </div>
+
+              <!-- PESTAÑAS/COMPONENTES  -->
+              <div
+                class="accordion-item-body"
+                role="region"
+                [style.display]="accordionItem.expanded ? '' : 'none'"
+                [attr.id]="'accordion-body-' + index"
+                [attr.aria-labelledby]="'accordion-header-' + index"
+              >
+                <div *ngIf="item === 'Información de Actividad'">
+                  <dx-form
+                    #formTareas
+                    id="formTareas"
+                    [formData]="FTareas"
+                    [colCount]="1"
+                    [readOnly]="readOnly"
+                    labelLocation="top"
+                  >
+                    <dxi-item dataField="RESPONSABLES" editorType="dxDropDownBox">
+                      <dxo-label text="Responsable"></dxo-label>
+                      <div *dxTemplate>
+                        <dx-drop-down-box
+                          #dropDownResponsables
+                          id='dropDownResponsables'
+                          [dataSource]="DResponsables"
+                          placeholder="Seleccione Responsables..."
+                          stylingMode="filled"
+                          displayExpr="NOMBRE"
+                          valueExpr="ID_RESPONSABLE"
+                          [readOnly]="false"
+                          [opened]="openDropResponsablesMovil"
+                          [dropDownOptions]="{width:'85%', height:350, hideOnParentScroll: true, container:'#router-container'}"
+                          [(value)]="FTareas.RESPONSABLES.ID_RESPONSABLE"
+                        >
+                          <div *dxTemplate="let data of 'content'" style="display: flex; align-items: center; justify-content: space-between;">
+                            <dx-list
+                              #listResponsables
+                              id="listResponsables"
+                              [dataSource]="DResponsables"
+                              width="100%"
+                              height="inherit"
+                              selectionMode="single"
+                              keyExpr="ID_RESPONSABLE"
+                              [searchEnabled]="true"
+                              [searchExpr]="['ID_RESPONSABLE','NOMBRE']"
+                              [showSelectionControls]="true"
+                              (onSelectionChanged)="onSelectionChangedResponsableList($event, data, 'movil')"
+                            >
+                              <div *dxTemplate="let item of 'item'">
+                                <div *ngIf="item.FOTO !== '' " style="display: flex; align-items: center;">
+                                  <a class="avatar-content">
+                                    <img
+                                      [id]="'USER-'+item.id"
+                                      width="20px"
+                                      height="20px"
+                                      [src]="item.FOTO"
+                                      [alt]="item.NOMBRE"
+                                    />
+                                  </a>
+                                  <span style="overflow: hidden; margin-left: 5px;"> {{ item.NOMBRE }} </span>
+                                </div>
+                                <div *ngIf="item.FOTO === '' " style="display: flex; align-items: center;">
+                                  <span class="avatar-content-name">
+                                    <span>{{ item.iconNameUser }}</span>
+                                  </span>
+                                  <span style="margin-left: 5px; overflow: hidden;"> {{ item.NOMBRE }} </span>
+                                </div>
+                              </div>
+                            </dx-list>
+                          </div>
+                        </dx-drop-down-box>
+                      </div>
+                    </dxi-item>
+  
+                    <dxi-item dataField="COLABORADORES" editorType="dxDropDownBox">
+                      <dxo-label text="Colaboradores"></dxo-label>
+                      <div *dxTemplate>
+                        <dx-tag-box
+                          #tagBoxColaboradores
+                          id="tagBoxColaboradores"
+                          displayExpr="NOMBRE"
+                          valueExpr="ID_RESPONSABLE"
+                          width="100%"
+                          height="50px"
+                          placeholder="Seleccione Colaboradores..."
+                          applyValueMode="useButtons"
+                          itemTemplate="customItem"
+                          tagTemplate="customTag"
+                          [maxDisplayedTags]="3"
+                          [showSelectionControls]="true"
+                          [multiline]="true"
+                          [searchEnabled]="true"
+                          [dataSource]="DColaboradores"
+                          [(value)]="FTareas.COLABORADORES"
+                          [dropDownOptions]="{width:'85%', height:350, hideOnParentScroll: true, container:'#router-container'}"
+                          (onContentReady)="onInitializedFromResponsables($event, DColaboradores, 'html')"
+                          (onValueChanged)="onValueColaboradores($event, FTareas.COLABORADORES, CLASE_TAREAS, 'movil')"
+                        >
+                          <div *dxTemplate="let data of 'customItem'" style="display: flex; align-items: center; width: 100%;">
+                            <a *ngIf="data.FOTO !== '' " class="avatar-content" >
+                              <img 
+                                [id]="'USER-'+data.ID_RESPONSABLE"
+                                width="20px"
+                                height="20px"
+                                [src]="data.FOTO"
+                                [alt]="data.NOMBRE"
+                              />
+                            </a>
+                            <span *ngIf="data.FOTO === '' " class="avatar-content-name" >
+                              <span [id]="'USER-'+data.ID_RESPONSABLE">{{ data.iconNameUser }}</span>
+                            </span>
+                            <span style="margin-left: 10px;">{{ data.NOMBRE }}</span>
+                          </div>
+                          <div *dxTemplate="let data of 'customTag'">
+                            <div style="display: flex; align-items: center; width: 100%;" >
+                              <a *ngIf="data.FOTO !== '' " class="avatar-content" >
+                                <img 
+                                  [id]="'USER-'+data.ID_RESPONSABLE"
+                                  width="20px"
+                                  height="20px"
+                                  [src]="data.FOTO"
+                                  [alt]="data.NOMBRE"
+                                />
+                              </a>
+                              <span *ngIf="data.FOTO === '' " class="avatar-content-name" >
+                                <span [id]="'USER-'+data.ID_RESPONSABLE">
+                                  {{ data.iconNameUser }}
+                                </span>
+                              </span>
+                              <span *ngIf="FTareas.COLABORADORES.length === 1" class="oscroll-of" style="margin-left: 10px;">{{ data.NOMBRE }}</span>
+                            </div>
+                          </div>
+                        </dx-tag-box>
+                      </div>
+                    </dxi-item>
+  
+                    <dxi-item dataField="PRIORIDAD" editorType="dxDropDownBox">
+                      <dxo-label text="Prioridad"></dxo-label>
+                      <div *dxTemplate>
+                        <dx-select-box
+                          #selectBox
+                          [items]="listPrioridad"
+                          [value]="FTareas.PRIORIDAD"
+                          placeholder="Seleccione..."
+                          (onValueChanged)="onSelectionPrioridad($event, data, CLASE_TAREAS, 'movil')"
+                        ></dx-select-box>
+                      </div>
+                    </dxi-item>
+  
+                    <dxi-item dataField="PROGRAMACION">
+                      <dxo-label text="Programación"></dxo-label>
+                      <div *dxTemplate>
+                        <div style="cursor: pointer;">
+                          <dx-button 
+                            id="btnProgramarFechas"
+                            #btnProgramarFechas
+                            icon="icon-calendar-sl"
+                            (onClick)="showProgramarFechas($event, FTareas, 'movil')"
+                          >
+                            <i class="icon-calendar-sl" ></i>
+                          </dx-button>
+                          <span
+                           *ngIf="FTareas.PROGRAMACION !== '' "
+                            [ngStyle]="{'font.size':'.735rem', 'color': 'rgba(10,57,96,.55)' }"
+                          >
+                            {{ FTareas.PROGRAMACION }}
+                          </span>
+                          <dx-button 
+                            [visible]="!visibleItemsFechasMovil"
+                            (onClick)="showProgramarFechas($event, FTareas, 'movil')"
+                          >
+                            <div>
+                              <i class="icon-chevron-down-xs" ></i>
+                              <span style="margin-left: 5px">Ver más</span>
+                            </div>
+                          </dx-button>
+                        </div>
+                      </div>
+                    </dxi-item>
+  
+                    <dxi-item itemType="group" *ngIf="visibleItemsFechasMovil">
+                      <dxo-col-count-by-screen [xs]="2" [sm]="2" [md]="2" [lg]="2"></dxo-col-count-by-screen>
+                      <!-- <mat-divider></mat-divider> -->
+                      <dxi-item dataField="TODO_DIA">
+                        <dxo-label text="Todo el dia"></dxo-label>
+                        <div *dxTemplate>
+                          <dx-switch
+                            class="mx-2"
+                            [(value)]="FTareas.TODO_DIA"
+                            (onValueChanged)="onValueChangedTodoElDia($event, dataEditFila, 'movil')"
+                          ></dx-switch>
+                        </div>
+                      </dxi-item>
+                      <dxi-item dataField="REPETIR">
+                        <dxo-label text="Repetir"></dxo-label>
+                        <div *dxTemplate>
+                          <dx-switch
+                            class="mx-2"
+                            [(value)]="FTareas.REPETIR"
+                            (onValueChanged)="onValueChangedRepetir($event, dataEditFila, 'movil')"
+                          ></dx-switch>
+                        </div>
+                      </dxi-item>
+                    </dxi-item>
+                    <dxi-item itemType="group" *ngIf="visibleItemsFechasMovil">
+                      <dxi-item dataField="FECHA_INICIO">
+                        <dxo-label text="Fecha Inicio"></dxo-label>
+                        <div *dxTemplate>
+                          <dx-date-box
+                            #fechaInicio
+                            placeholder="Fecha inicial."
+                            [min]="minDateValue"
+                            type="date"
+                            [(value)]="FTareas.FECHA_INICIO"
+                            (onValueChanged)="getCalculateDuracion($event, dataEditFila, 'fecha inicio', CLASE_TAREAS, 'movil')"
+                          ></dx-date-box>
+                        </div>
+                      </dxi-item>
+                      <dxi-item dataField="FECHA_FIN">
+                        <dxo-label text="Fecha final"></dxo-label>
+                        <div *dxTemplate>
+                          <dx-date-box
+                            #fechaInicio
+                            placeholder="Fecha inicial."
+                            [min]="minDateValue"
+                            type="date"
+                            [(value)]="FTareas.FECHA_FIN"
+                            (onValueChanged)="getCalculateDuracion($event, dataEditFila, 'fecha fin', CLASE_TAREAS, 'movil')"
+                          ></dx-date-box>
+                        </div>
+                      </dxi-item>
+                      <dxi-item dataField="FRECUENCIA">
+                        <dxo-label text="Frecuencia"></dxo-label>
+                        <div *dxTemplate>
+                          <dx-select-box
+                            #selectFrecuencia
+                            [dataSource]="['Horas','Diario','Semanal','Mensual','Anual']"
+                            [(value)]="FTareas.FRECUENCIA"
+                            placeholder="Seleccione..."
+                            (onValueChanged)="onSeleccFrecuencia($event, dataEditFila, 'movil')"
+                          ></dx-select-box>
+                        </div>
+                      </dxi-item>
+                      <dxi-item dataField="INTERVALO_FRECUENCIA">
+                        <dxo-label text="Intervalo de Frecuencia"></dxo-label>
+                        <div *dxTemplate>
+                          <div class="div-item-data-item xt-texteditor-clear-x" style="display: flex;">
+                            <dx-number-box
+                              width="30%"
+                              height="30px"
+                              [min]="0"
+                              [(value)]="FTareas.INTERVALO_FRECUENCIA"
+                              [showSpinButtons]="false"
+                              [showClearButton]="true"
+                              (onValueChanged)="onSeleccIntervaloFrecuencia($event, dataEditFila, 'movil')"
+                            ></dx-number-box>
+                            <span style="margin-left: 10px;">{{ periodoSeleccionado }}</span>
+                          </div>
+                        </div>
+                      </dxi-item>
+                      <dxi-item dataField="PERIODO_FRECUENCIA" >
+                        <dxo-label text="Periodo de Frecuencia"></dxo-label>
+                        <div *dxTemplate>
+                          <div *ngIf="modoSelecionFrecuencia === 'semana'" class="div-item-data">
+                            <div class="div-item-data-item xt-texteditor-clear-x" style="display: flex;">
+                              <mat-button-toggle-group
+                                #group="matButtonToggleGroup"
+                                name="diasSemana"
+                                aria-label="Dias Semana"
+                                multiple=""
+                                [(value)]="FTareas.PERIODO_FRECUENCIA"
+                                (change)="onValueChangedPeriodoFrecuencia($event, dataEditFila, 'semana', 'movil')"
+                              >
+                                <mat-button-toggle matTooltip="Domingo" value="Domingo">DOM</mat-button-toggle>
+                                <mat-button-toggle matTooltip="Lunes" value="Lunes">LUN</mat-button-toggle>
+                                <mat-button-toggle matTooltip="Martes" value="Martes">MAR</mat-button-toggle>
+                                <mat-button-toggle matTooltip="Miercoles" value="Miercoles">MIÉ</mat-button-toggle>
+                                <mat-button-toggle matTooltip="Jueves" value="Jueves">JUE</mat-button-toggle>
+                                <mat-button-toggle matTooltip="Viernes" value="Viernes">VIE</mat-button-toggle>
+                                <mat-button-toggle matTooltip="Sabado" value="Sabado">SAB</mat-button-toggle>
+                              </mat-button-toggle-group>
+                            </div>
+                          </div>
+                          <div *ngIf="modoSelecionFrecuencia === 'mes'" class="div-item-data">
+                            <div class="div-item-data-item xt-texteditor-clear-x" style="display: flex;">
+                              <mat-button-toggle-group
+                                #group="matButtonToggleGroup"
+                                name="diasMes"
+                                aria-label="Dias mes"
+                                multiple
+                                [(value)]="FTareas.PERIODO_FRECUENCIA"
+                                (change)="onValueChangedPeriodoFrecuencia($event, dataEditFila, 'mes', 'movil')"
+                              >
+                                <div *ngFor="let item of numDiasMes">
+                                  <mat-button-toggle matTooltip="{{item}}" value="{{item}}">{{item}}</mat-button-toggle>
+                                </div>
+                              </mat-button-toggle-group>
+                            </div>
+                          </div>
+                          <div *ngIf="modoSelecionFrecuencia === 'ano'" class="div-item-data">
+                            <div class="div-item-data-item xt-texteditor-clear-x" style="display: flex;">
+                              <mat-button-toggle-group
+                                #group="matButtonToggleGroup"
+                                name="mesAno"
+                                aria-label="Meses año"
+                                multiple
+                                [(value)]="FTareas.PERIODO_FRECUENCIA"
+                                (change)="onValueChangedPeriodoFrecuencia($event, dataEditFila, 'ano', 'movil')"
+                              >
+                                <div *ngFor="let item of mesAno">
+                                  <mat-button-toggle matTooltip="{{item}}" value="{{item}}">{{item}}</mat-button-toggle>
+                                </div>
+                              </mat-button-toggle-group>
+                            </div>
+                          </div>
+                        </div>
+                      </dxi-item>
+                      <!-- <mat-divider></mat-divider> -->
+                      <dxi-item>
+                        <dx-button 
+                          id="btnOcultarProgramacion"
+                          #btnOcultarProgramacion
+                          (onClick)="closeProgramarFechas('movil')"
+                        >
+                          <div>
+                            <i class="icon-chevron-up-xs" ></i>
+                            <span style="margin-left: 5px">Ocultar</span>
+                          </div>
+                        </dx-button>
+                      </dxi-item>
+                    </dxi-item>
+  
+                    <dxi-item dataField="ESTADO" editorType="dxDropDownBox">
+                      <dxo-label text="Estado"></dxo-label>
+                      <div *dxTemplate>
+                        <dx-select-box
+                          #selectEstado
+                          [dataSource]="DLEstados"
+                          displayExpr="VALOR1"
+                          valueExpr="VALOR1"
+                          [value]="FTareas.ESTADO"
+                          placeholder="Seleccione..."
+                          (onValueChanged)="onSelectionEstado($event, data, CLASE_TAREAS, 'movil')"
+                        ></dx-select-box>
+                      </div>
+                    </dxi-item>
+  
+                    <dxi-item dataField="DESCRIPCION">
+                      <dxo-label text="Descripción"></dxo-label>
+                      <div *dxTemplate>
+                        <dx-text-area
+                          id="txtDescripcionTarea"
+                          placeholder="Descripción..."
+                          [height]="90"
+                          [(value)]="FTareas.DESCRIPCION"
+                          (onValueChanged)="onValueChangedDescripcion($event, data, CLASE_TAREAS, 'movil')"
+                        ></dx-text-area>
+                      </div>
+                    </dxi-item>
+                  </dx-form>
+                  <div style="width: 100%; display: flex; justify-content: flex-start; margin-top: 20px;">
+                    <dx-button
+                      id="btnAceptarTarea"
+                      stylingMode="contained"
+                      text="Aceptar"
+                      type="default"
+                      [width]="100"
+                      style="background-color: rgba(18,94,220,1) !important;"
+                      [disabled]="conCambios <= 0"
+                      (onClick)="guardarTarea($event)"
+                    ></dx-button>
+                    <dx-button
+                      id="btnCancelarPT"
+                      stylingMode="contained"
+                      text="Cancelar"
+                      type="normal"
+                      [width]="110"
+                      [style.margin-left]="'20px'"
+                      (onClick)="cancelarTarea($event)"
+                    ></dx-button>
+                  </div>
+                </div>
+
+                <div *ngIf="item === 'Sub tareas' && activeAcordeonSubTareas">
+                  <div *ngIf="FTareas.SUB_TAREAS.length > 0">
+                    <mat-card class="card" *ngFor="let sub_tarea of FTareas.SUB_TAREAS" >
+                      <div style="width: 100%; height: 100%; display:flex; justify-content: space-between;">
+                        <div style="width: 5%;">
+                          <div class="btn-drag">
+                            <dx-button icon="overflow" ></dx-button>
+                          </div>
+                        </div>
+                        <div style="width: 95%; height: 100%;" (click)="ondblclickCard('editar', sub_tarea)">
+                          <mat-card-header>
+                            <mat-card-title>
+                              <div style="width: 100%; display: flex; justify-content: space-between; align-items: center;">
+                                <h4 class="xt-card-header-text"> {{ sub_tarea.NOMBRE }} </h4>
+                              </div>
+                            </mat-card-title>
+                            <div *ngIf="sub_tarea.RESPONSABLES.FOTO !== '' " style="display: flex; align-items: center; justify-content: end; width: 10%;">
+                              <a class="avatar-content" >
+                                <img
+                                  [id]="'USER-'+sub_tarea.ITEM"
+                                  width="20px"
+                                  height="20px"
+                                  [src]="sub_tarea.RESPONSABLES.FOTO"
+                                  [alt]="sub_tarea.RESPONSABLES.NOMBRE"
+                                />
+                              </a>
+                            </div>
+                            <div *ngIf="sub_tarea.RESPONSABLES.FOTO === '' " style="display: flex; align-items: center; justify-content: end; width: 10%;">
+                              <span class="avatar-content-name">
+                                <span [id]="'USER-'+sub_tarea.ITEM">{{ sub_tarea.RESPONSABLES.iconNameUser }}</span>
+                              </span>
+                            </div>
+                          </mat-card-header>
+                          <mat-card-content>
+                            <div style="width: 100%; display: flex; justify-content: space-between; align-items: center;">
+                              <div class="conten-descripcion">
+                                <p>{{ sub_tarea.DESCRIPCION }}</p>
+                              </div>
+                              <dx-button id="btnSinIniciar" #btnSinIniciar
+                                icon="icon-chat-m-sl"
+                                (onClick)="showChatsComentarios($event, sub_tarea)"
+                              >
+                                <i class="icon-chat-m-sl" ></i>
+                              </dx-button>
+                            </div>
+                          </mat-card-content>
+                          <mat-card-footer>
+                            <div style="width: 100%; display: flex; justify-content: space-between; align-items: center;">
+                              <div id="itamEstado"
+                                class="container-estado"
+                                [ngStyle]="{'background-color': (sub_tarea.ESTADO === 'Sin Iniciar' ? 'rgba(15,76,129,.05)':'') ||
+                                                                (sub_tarea.ESTADO === 'En Pausa' ? 'rgba(200,78,224,.2)':'') ||
+                                                                (sub_tarea.ESTADO === 'En Proceso' ? 'rgba(26,115,232,.2)':'') ||
+                                                                (sub_tarea.ESTADO === 'Finalizado' ? 'rgba(53,204,172,.2)':'') ||
+                                                                (sub_tarea.ESTADO === 'Descartada' ? 'rgba(98,121,140, .3)':''),
+                                              'color': (sub_tarea.ESTADO === 'Sin Iniciar' ? 'rgba(98,121,140,.9)':'') ||
+                                                                  (sub_tarea.ESTADO === 'En Pausa' ? 'rgba(200,78,224,1)':'') ||
+                                                                  (sub_tarea.ESTADO === 'En Proceso' ? 'rgba(26,115,232,1)':'') ||
+                                                                  (sub_tarea.ESTADO === 'Finalizado' ? 'rgba(53,204,172,1)':'') ||
+                                                                  (sub_tarea.ESTADO === 'Descartada' ? 'rgba(98,121,140,1)':'')
+                                }"
+                              >
+                                <span
+                                  class="status-badge"
+                                  [ngStyle]="{'background-color': (sub_tarea.ESTADO === 'Sin Iniciar' ? 'rgba(98,121,140,.9)':'') ||
+                                                                  (sub_tarea.ESTADO === 'En Pausa' ? 'rgba(200,78,224,1)':'') ||
+                                                                  (sub_tarea.ESTADO === 'En Proceso' ? 'rgba(26,115,232,1)':'') ||
+                                                                  (sub_tarea.ESTADO === 'Finalizado' ? 'rgba(53,204,172,1)':'') ||
+                                                                  (sub_tarea.ESTADO === 'Descartada' ? 'rgba(98,121,140,1)':'')
+                                  }"
+                                ></span>
+                                <span>{{ sub_tarea.ESTADO }}</span>
+                              </div>
+                              <div></div>
+                              <div>
+                                <span
+                                  *ngIf="sub_tarea.PROGRAMACION !== '' "
+                                  [ngStyle]="{'font.size':'.735rem', 'color': 'rgba(10,57,96,.55)' }"
+                                >
+                                  {{ sub_tarea.PROGRAMACION }}
+                                </span>
+                                <dx-button 
+                                  id="btnVerFechas"
+                                  #btnVerFechas
+                                  icon="icon-calendar-sl"
+                                >
+                                  <i class="icon-calendar-sl" ></i>
+                                </dx-button>
+                              </div>
+                            </div>
+                          </mat-card-footer>
+                        </div>
+                      </div>
+                    </mat-card>
+                  </div>
+                  <div style="width: 100%; display: flex; justify-content: flex-start; margin-top: 1rem;" class="btn-adnew-icon">
+                    <dx-button
+                      class="btn-adnew"
+                      id="btnAggSubTarea"
+                      stylingMode="contained"
+                      text="Agregar sub tarea"
+                      type="default"
+                      icon="plus"
+                      [width]="180"
+                      style="background-color: rgba(25,76,255,.1) !important; color: rgba(25,76,255,1) !important;"
+                      (onClick)="ondblclickCard('nuevo', FTareas)"
+                    ></dx-button>
+                  </div>
+                </div>
+
+                <div *ngIf="item === 'Histórico de novedades y chat' && activeAcordeonHistorico" class="form-content">
+                    <div id="div-container-mensaje" class="timeline-body">
+                        <p-timeline [value]="DTimeline" align="left" styleClass="customized-timeline">
+                          <ng-template pTemplate="marker" let-evento>
+                            <span class="custom-marker p-shadow-2" [style.backgroundColor]="evento.color">
+                              <i class="icon-programacion-sl"></i>
+                            </span>
+                          </ng-template>
+                          <ng-template pTemplate="content" let-evento>
+                            <p-card [header]="evento.NOMBRE">
+                              <div class="container-fechas xt-texteditor-clear-x">
+                                <dx-date-box #fechaInicio type="datetime" [readOnly]="true" class="dateBox-fechas" [(value)]="evento.FECHA"></dx-date-box>
+                              </div>
+                              <br>
+                              <p>{{ evento.DESCRIPCION }}</p>
+                            </p-card>
+                          </ng-template>
+                        </p-timeline>
+                    </div>
+
+                  <div class="form-toolbar-box">
+                    <dx-toolbar>
+                      <dxi-item
+                        location="before"
+                        widget="dxDropDownButton"
+                        [options]="{
+                          items: itemsFiltroHistorico,
+                          icon: 'filter',
+                          displayExpr: 'name',
+                          keyExpr: 'value',
+                          selectedItemKey: 'Novedades',
+                          stylingMode: 'text',
+                          useSelectMode: true,
+                          dropDownOptions: { width: 'auto' },
+                          onSelectionChanged: onSelectionChangedFiltroHistorico
+                        }"
+                      ></dxi-item>
+                    </dx-toolbar>
+                  </div>
+
+                  <div class="div-mensaje-control">
+                    <div style="width: 84%;">
+                      <dx-text-box 
+                        placeholder="Escribe Mensaje..."
+                        [showClearButton]="true"
+                        [(value)]="mesajeTextHistorico"
+                      ></dx-text-box>
+                    </div>
+                    <div class="div-mensaje-icon-control">
+                      <span style="width: 20%; height: 100%;" class="style-icon"> <i class="icon-opciones"></i> </span>
+                      <span style="width: 80%; height: 100%;" class="style-icon send-icon" (click)="guardarComentariosHistorico()"> Enviar </span> 
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </cdk-accordion-item>
+          </cdk-accordion>
+  
+        </dx-scroll-view>
+      </div>
+    </dx-popup>
+  </div>
+  
+
+  <dx-tooltip
+    id="tooltipResponsable"
+    [target]='targetIdTooltip'
+    position="bottom"
+    [(visible)]="toolTipVisible"
+    [hideOnOutsideClick]="false"
+  >
+    <div *dxTemplate="let data = data; of: 'content'">
+      <b style="font-size: 13px;">{{tooltipText}}</b>
+    </div>
+  </dx-tooltip>
+
+</div>
+
+<dx-load-panel
+  #loaderPanel
+  shadingColor="rgba(0,0,0,0.4)"
+  [position]="{ of: '#container-gespro' }"
+  [(visible)]="loadingVisible"
+  [showIndicator]="true"
+  [showPane]="true"
+  [shading]="true"
+  message="Un momento. Cargando datos..."
+  [hideOnOutsideClick]="false"
+></dx-load-panel>

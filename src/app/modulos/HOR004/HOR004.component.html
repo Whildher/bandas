@@ -1,0 +1,408 @@
+<div class="row gx-3">
+    <div class="col-12">
+       <div class="card-content">
+        <div>
+            <dx-form
+                #formFacturas
+                id="formFacturas"
+                labelLocation="top"
+                [formData]="FFacturas"
+                [readOnly]="readOnlyForm"
+                [colCount]="2"
+                labelLocation="left"
+                >
+                <dxi-item caption="Identificación" itemType="group" >
+
+                    <dxi-item itemType="group" colCount="2" >
+
+                        <dxi-item dataField="TIPO" >
+                            <dxo-label text="Tipo"></dxo-label>
+                            <div *dxTemplate>
+                                <dx-select-box
+                                    #dxOcupacion
+                                    id="dxOcupacion"
+                                    [dataSource]="['Individual','Masiva']"
+                                    [readOnly]="readOnly"
+                                    [(value)]="FFacturas.TIPO"
+                                    (onValueChanged)="onSeleccTipo($event)"
+                                >
+                                </dx-select-box>
+                            </div>
+                        </dxi-item>
+
+                        <dxi-item dataField="DOCUMENTO"
+                            editorType="dxSelectBox"
+                            [editorOptions]="{placeholder:'Documento'}"
+                        >
+                            <dxo-label text="Documento"></dxo-label>
+                            <div *dxTemplate>
+                                <dx-select-box
+                                    #xs_DOCUMENTO
+                                    id="xs_DOCUMENTO"
+                                    [dataSource]="DDocumentos" 
+                                    [(value)]="FFacturas.DOCUMENTO" 
+                                    [searchEnabled]="true"
+                                    displayExpr="DOCUMENTO"
+                                    valueExpr="DOCUMENTO"
+                                    searchMode="contains"
+                                    [acceptCustomValue]="true"
+                                    [readOnly]="readOnly"
+                                    [dropDownOptions]="dropDownOptions">
+                                >
+                                </dx-select-box>
+                            </div>
+                        </dxi-item>
+
+                    </dxi-item>
+
+                    <dxi-item itemType="group" colCount="2" >
+
+                        <dxi-item dataField="FECHA"editorType="dxDateBox">
+                            <div *dxTemplate>
+                                <dx-date-box 
+                                    type="date" 
+                                    [readOnly]="readOnly" 
+                                    [value]="FFacturas.FECHA" 
+                                    (onValueChanged)="onChangeFecha($event)">
+                                </dx-date-box>
+                            </div>
+                            <dxo-label text="Fecha"></dxo-label>
+                        </dxi-item>
+    
+                        <dxi-item dataField="HORA" [editorOptions]="{ readOnly: true }">
+                            <dxo-label text="Hora"></dxo-label>
+                            <div *dxTemplate>
+                                <dx-date-box 
+                                    type="datetime" 
+                                    [readOnly]="true" 
+                                    displayFormat="hh:mm:ss" 
+                                    [value]="FFacturas.HORA" >
+                                </dx-date-box>
+                            </div>
+                        </dxi-item>
+    
+                    </dxi-item>
+
+                </dxi-item>
+
+                <dxi-item caption="Estado y Usuario" itemType="group" >
+                    <dxi-item dataField="ESTADO">
+                        <dxo-label text="Estado"></dxo-label>
+                        <div *dxTemplate>
+                            <dx-select-box
+                                #dxEstado
+                                id="dxEstado"
+                                [dataSource]="['ANULADO','REGISTRADO']"
+                                [readOnly]="true"
+                                [(value)]="FFacturas.ESTADO"
+                            >
+                            </dx-select-box>
+                        </div>
+                    </dxi-item>
+
+                    <dxi-item dataField="USUARIO" [editorOptions]="{ readOnly: true }" >
+                        <dxo-label text="Usuario"></dxo-label>
+                    </dxi-item>
+                </dxi-item>
+
+                <dxi-item caption="Periodo facturación" itemType="group" colCount="2" *ngIf="this.FFacturas.TIPO == 'Masiva'" >
+
+                    <dxi-item dataField="PERIODO" >
+                        <dxo-label text="Periodo"></dxo-label>
+                        <div *dxTemplate>
+                            <dx-select-box
+                                #xs_PERIODO
+                                id="xs_PERIODO"
+                                [dataSource]="DPeriodos" 
+                                [(value)]="FFacturas.PERIODO" 
+                                [searchEnabled]="true"
+                                displayExpr="PERIODO"
+                                valueExpr="PERIODO"
+                                searchMode="contains"
+                                [readOnly]="readOnly"
+                                [dropDownOptions]="dropDownOptions"
+                                (onValueChanged)="onSeleccPeriodo($event)"
+                                >
+                            >
+                            </dx-select-box>
+                        </div>
+                    </dxi-item>
+
+                    <dxi-item dataField="FECHA_VENCIMIENTO" editorType="dxDateBox">
+                        <div *dxTemplate>
+                            <dx-date-box 
+                                type="date" 
+                                [readOnly]="readOnly" 
+                                [value]="FFacturas.FECHA_VENCIMIENTO" 
+                                (onValueChanged)="onChangeFecha($event)">
+                            </dx-date-box>
+                        </div>
+                        <dxo-label text="Vencimiento"></dxo-label>
+                    </dxi-item>
+
+                    <dxi-item dataField="FECHA_INICIAL" editorType="dxDateBox">
+                        <div *dxTemplate>
+                            <dx-date-box 
+                                type="date" 
+                                [readOnly]="true" 
+                                [value]="FFacturas.FECHA_INICIAL" 
+                                (onValueChanged)="onChangeFecha($event)">
+                            </dx-date-box>
+                        </div>
+                        <dxo-label text="Fecha Inicial"></dxo-label>
+                    </dxi-item>
+
+                    <dxi-item dataField="FECHA_FINAL" editorType="dxDateBox">
+                        <div *dxTemplate>
+                            <dx-date-box 
+                                type="date" 
+                                [readOnly]="true" 
+                                [value]="FFacturas.FECHA_FINAL" 
+                                (onValueChanged)="onChangeFecha($event)">
+                            </dx-date-box>
+                        </div>
+                        <dxo-label text="Fecha Final"></dxo-label>
+                    </dxi-item>
+
+                    <dxi-item dataField="DESCRIPCION" colSpan="2" [editorOptions]="{ readOnly }" >
+                        <dxo-label text="Observaciones"></dxo-label>
+                    </dxi-item>
+  
+
+                </dxi-item>
+    
+                <dxi-item caption="Datos facturación" itemType="group" colCount="2" *ngIf="this.FFacturas.TIPO == 'Individual'">
+
+                    <dxi-item dataField="ID_CLIENTE" >
+                        <dxo-label text="Identificación"></dxo-label>
+                        <div *dxTemplate>
+                            <dx-select-box
+                                #xs_ID_CLIENTE
+                                id="xs_ID_CLIENTE"
+                                [dataSource]="DClientesFac" 
+                                [(value)]="FFacturas.ID_CLIENTE" 
+                                [searchEnabled]="true"
+                                displayExpr="ID_CLIENTE"
+                                valueExpr="ID_CLIENTE"
+                                searchMode="contains"
+                                [readOnly]="readOnly"
+                                [dropDownOptions]="dropDownOptionsCliente"
+                                (onValueChanged)="onSeleccCliente($event)"
+                                >
+                                <div *dxTemplate="let data of 'item'">
+                                    <div style="width: 25%; float:left">
+                                        {{ data.ID_CLIENTE }}
+                                    </div>
+                                    
+                                    <div style="width: 75%; float:right;">
+                                        {{ data.NOMBRE_COMPLETO }}
+                                    </div>
+                                </div>
+
+                                <div *dxTemplate="let data of 'tempEncab'" style="width: 100%;">
+                                    <dx-button icon="refresh" (onClick)="refreshClick('productos')"></dx-button>
+                                    <div style="float: right;">
+                                        <dx-button 
+                                            icon="runner" 
+                                            text="Crear cliente"
+                                            type="success"
+                                            (onClick)="crearCliente($event, 'clientes')">
+                                        </dx-button>
+                                    </div>
+                                </div>
+                
+                            </dx-select-box>
+                        </div>
+                    </dxi-item>
+
+                    <dxi-item dataField="NOMBRE" [editorOptions]="{ readOnly: true }">
+                        <dxo-label text="Nombre"></dxo-label>
+                    </dxi-item>
+
+                    <dxi-item dataField="ID_PROPIEDAD" >
+                        <dxo-label text="Propiedad"></dxo-label>
+                    </dxi-item>
+
+                    <dxi-item dataField="FACTURA" 
+                        [editorOptions]="{ readOnly: true, 
+                                           inputAttr: { 'style': 'color: green; ' +
+                                                        'font-weight: bold; ' +
+                                                        'font-size: 16px; ' +
+                                                        'text-transform: uppercase' } }" >
+                        <dxo-label text="Factura"></dxo-label>
+                    </dxi-item>
+
+                    <dxi-item dataField="TIPO_VENTA">
+                        <dxo-label text="Tipo"></dxo-label>
+                        <div *dxTemplate>
+                            <dx-select-box
+                                #dxEstado
+                                id="dxEstado"
+                                [dataSource]="['CONTADO','CREDITO']"
+                                [readOnly]="true"
+                                [(value)]="FFacturas.TIPO_VENTA"
+                            >
+                            </dx-select-box>
+                        </div>
+                    </dxi-item>
+
+                    <dxi-item dataField="FECHA_VENCIMIENTO" editorType="dxDateBox">
+                        <div *dxTemplate>
+                            <dx-date-box 
+                                type="date" 
+                                [readOnly]="readOnly" 
+                                [value]="FFacturas.FECHA_VENCIMIENTO" 
+                                (onValueChanged)="onChangeFecha($event)">
+                            </dx-date-box>
+                        </div>
+                        <dxo-label text="Vencimiento"></dxo-label>
+                    </dxi-item>
+
+                    <dxi-item dataField="DESCRIPCION" colSpan="2" [editorOptions]="{ readOnly }" >
+                        <dxo-label text="Observaciones"></dxo-label>
+                    </dxi-item>
+  
+
+                </dxi-item>
+    
+                <dxi-item caption="Filtros de generación" itemType="group" colSpan="2" colCount="2" *ngIf="this.FFacturas.TIPO == 'Masiva'">
+
+                    <dxi-item dataField="FILTRO" [editorOptions]="{ readOnly }" >
+                        <dxo-label text="Tarifa"></dxo-label>
+
+                        <div *dxTemplate>
+                            <dx-select-box
+                                #xs_ID_TARIFA
+                                id="xs_ID_TARIFA"
+                                [dataSource]="DTarifas" 
+                                [(value)]="FFacturas.FILTRO" 
+                                [searchEnabled]="true"
+                                [displayExpr]="verTarifa"
+                                valueExpr="ID_TARIFA"
+                                searchMode="contains"
+                                [acceptCustomValue]="true"
+                                [readOnly]="readOnly"
+                                >
+                                <div *dxTemplate="let data of 'item'">
+                                    <div style="width: 40%; float:left">
+                                        {{ data.ID_TARIFA }}
+                                    </div>
+                                    
+                                    <div style="width: 60%; float:right; ">
+                                        {{ data.VALOR | number:'1.0-2':'en-US' }}
+                                    </div>
+                                </div>
+                            </dx-select-box>
+                        </div>
+                    </dxi-item>
+
+                    <dxi-item dataField="EXTRAORDINARIA" editorType="dxCheckBox" [editorOptions]="{ readOnly }" >
+                        <dxo-label text="Cuota Extraordinaria"></dxo-label>
+                    </dxi-item>
+
+                    <dxi-item [editorOptions]="{ height: 180 }">
+                        <dx-button
+                            #btnGenerar
+                            text="Generar facturación"
+                            type="default"
+                            [width]="220"
+                            [height]="50"
+                            icon="runner"
+                            [disabled]="!esEdicion"
+                            (onClick)="clickGenerarFac($event)"
+                        >
+                        </dx-button>
+                    </dxi-item>
+
+                </dxi-item>
+
+                <dxi-item caption="Totales" itemType="group" *ngIf="this.FFacturas.TIPO == 'Individual'">
+
+                    <dx-data-grid
+                        id="gridTotales"
+                        [dataSource]="DTotales"
+                        keyExpr="ITEM"
+                        [showBorders]="false"
+                        [showColumnHeaders]="false"
+                        width="60%"
+                        (onCellPrepared)="onCellPrepared($event)"
+                        >
+                        <dxi-column dataField="CONCEPTO"></dxi-column>
+                        <dxi-column dataField="FRM_VALOR" alignment="right" ></dxi-column>
+                        <dxo-summary>
+                            <dxi-total-item
+                                name="SelectedRowsSummary"
+                                summaryType="sum"
+                                column="VALOR"
+                                showInColumn="FRM_VALOR"
+                                displayFormat="TOTAL: {0}"
+                                valueFormat="#,##0"
+                            >
+                            </dxi-total-item>
+                        </dxo-summary>
+                    </dx-data-grid>
+
+                </dxi-item>
+
+            </dx-form>
+        </div>
+        <br/>
+    </div>
+</div>
+
+<div class="row gx-3" *ngIf="this.FFacturas.TIPO == 'Masiva'">
+  <div class="col-12">
+    <div class="card-content card-grid">
+
+      <app-HOR00401
+        [events]="eventsSubjectItems.asObservable()"
+        (onRespuestaArre)="onRespuestaItems($event)"
+      >
+      </app-HOR00401>
+
+    </div>
+  </div>
+</div>
+  
+<div class="row gx-3" *ngIf="this.FFacturas.TIPO == 'Individual'">
+    <div class="col-12">
+      <div class="card-content card-grid">
+  
+        <app-HOR00402
+          [events]="eventsSubjectItemsIndiv.asObservable()"
+          (onRespuestaItemsIndiv)="onRespuestaItemsIndiv($event)"
+        >
+        </app-HOR00402>
+  
+      </div>
+    </div>
+  </div>
+    
+<dx-load-panel
+  #loaderPanel
+  shadingColor="rgba(0,0,0,0.4)"
+  [position]="{ of: '#router-container' }"
+  [(visible)]="loadingVisible"
+  [showIndicator]="true"
+  [showPane]="true"
+  [shading]="true"
+  message="Un momento. Cargando datos..."
+  [hideOnOutsideClick]="false"
+></dx-load-panel>
+
+<app-filtrobusq
+  [events]="eventsSubjectFiltro.asObservable()"
+  (onRespuestaSelecc)="onRespuestaFiltro($event)"
+  >
+</app-filtrobusq>
+
+<app-geninformes
+  [events]="eventsSubjectInformes.asObservable()" 
+  >
+</app-geninformes>
+
+<app-HOR00101
+  [events]="eventsSubjectCliente.asObservable()"
+  (onGuardarDatos)="onRespuestaCrearCliente($event)"
+  >
+</app-HOR00101>

@@ -1,0 +1,71 @@
+<dx-popup
+    #popUpPegar
+    id="popUpPegar"
+    width="auto"
+    height="auto"
+    maxHeight="450"
+    [showTitle]="false"
+    title=""
+    [dragEnabled]="false"
+    [hideOnOutsideClick]="true"
+    [showCloseButton]="false"
+    [(visible)]="popupVisible"
+    >
+    <dxo-position
+        my="center"
+        at="center"
+        of="window"
+        >
+    </dxo-position>
+
+    <div *dxTemplate="let data of 'content'">
+        <div class="container">
+            <h1>Pegar datos de Excel</h1>
+            <p>Pegue los datos en el área. Incluya los encabezados de las columnas:</p>
+            <!-- <textarea [(ngModel)]="input" placeholder="Paste your Excel data here"></textarea> -->
+            <textarea id="jsonarea" (change)="doTextareaValueChange($event)">{{input}}</textarea>
+            <!-- <button (click)="convertToJson()">Convert</button> -->
+            <dx-button
+              (onClick)="preVisualizar()"
+              icon="runner"
+              text="Previsualizar"
+              stylingMode="contained"
+              type="default"
+              [elementAttr]="{ class: 'cls-prev' }">
+              >
+            </dx-button>
+            <dx-button
+              (onClick)="pegarDatosGrid()"
+              icon="paste"
+              stylingMode="contained"
+              type="success"
+              text="Pegar datos"
+              >
+            </dx-button>
+    
+            <div *ngIf="jsonOutput">
+              <!-- <h2>JSON Output:</h2> -->
+              <!-- <pre>{{ jsonOutput }}</pre> -->
+              
+              <h3>Datos leídos:</h3>
+              <div class="table-content-class">
+                <table>
+                  <thead>
+                    <tr>
+                      <th *ngFor="let header of headers">{{ header }}</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let row of tableData">
+                      <td *ngFor="let header of headers">{{ row[header] }}</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        
+    </div>
+
+</dx-popup>
+  

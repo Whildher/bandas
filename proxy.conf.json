@@ -1,0 +1,38 @@
+{
+    "/api/dashboard/*": {
+        "target": "http://192.168.10.108:8890",
+        "pathRewrite": {
+            "^/api": ""
+        }
+    },
+    "/reportes/*": {
+        "target": "http://190.85.54.78:9300",
+        "pathRewrite": {
+            "^/reportes/": "/api/"
+        }
+    },
+    "/files/*": {
+        "target": "http://192.168.10.108:9300",
+        "pathRewrite": {
+            "^/files/": "/archivos/"
+        }
+    },
+    "/api/*": {
+        "target": "http://192.168.10.101:5955",
+        "pathRewrite": {
+            "^/api": ""
+        }
+    },
+    "/e/*": {
+        "target": "http://192.168.10.101:5955",
+        "pathRewrite": {
+            "^/e": ""
+        }
+    },
+    "/socket/*": {
+        "target": "http://190.85.54.78:3001",
+        "pathRewrite": {
+            "^/socket": ""
+        }
+    }
+}
